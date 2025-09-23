@@ -1171,6 +1171,7 @@
   }
   .home-content12 {
     gap: var(--dl-layout-space-oneandhalfunits);
+    width: 465px;
   }
   .home-header18 {
     gap: var(--dl-layout-space-unit);
@@ -1395,8 +1396,15 @@
   .home-heading3 {
     font-size: 36px;
   }
+  .home-content12 {
+    width: 427px;
+  }
   .home-heading4 {
-    font-size: 36px;
+    color: rgb(255, 255, 255);
+    width: 349px;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 400;
   }
   .home-caption8 {
     width: 100%;
