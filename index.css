@@ -1464,6 +1464,13 @@
     font-size: 18px;
     line-height: 21px;
   }
+  .home-square2 {
+    top: 100px;
+  }
+  .home-image4 {
+    width: 328px;
+    height: 233px;
+  }
   .home-heading5 {
     color: rgb(255, 255, 255);
     font-style: normal;
