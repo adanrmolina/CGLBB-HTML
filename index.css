@@ -1409,6 +1409,8 @@
   .home-caption8 {
     width: 100%;
     height: 110%;
+    font-size: 14px;
+    line-height: 21px;
   }
   .home-heading5 {
     color: rgb(255, 255, 255);
