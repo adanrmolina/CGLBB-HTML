@@ -247,7 +247,7 @@
  
 .home-caption2 {
   color: #7C7C80;
-  font-size: 40px;
+  font-size: 24px;
   max-width: 800px;
   font-style: normal;
   font-weight: 400;
@@ -568,7 +568,7 @@
   color: rgb(124, 124, 128);
   width: 512px;
   height: auto;
-  font-size: 20px;
+  font-size: 24px;
   max-width: 560px;
   line-height: 36px;
 }
@@ -731,7 +731,7 @@
  
 .home-header22 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -741,6 +741,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -762,7 +763,7 @@
  
 .home-header23 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -772,6 +773,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -793,7 +795,7 @@
  
 .home-header24 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -803,6 +805,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -834,7 +837,7 @@
  
 .home-header25 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -844,6 +847,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -865,7 +869,7 @@
  
 .home-header26 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -875,6 +879,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -896,7 +901,7 @@
  
 .home-header27 {
   color: rgb(255, 255, 255);
-  font-size: 24px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
@@ -906,6 +911,7 @@
   color: rgb(124, 124, 128);
   width: 100%;
   display: flex;
+  font-size: 24px;
   max-width: 560px;
   line-height: 24px;
 }
@@ -1337,7 +1343,6 @@
   .home-caption2 {
     color: rgb(124, 124, 128);
     width: auto;
-    font-size: 18px;
     font-style: normal;
     text-align: left;
     font-weight: 500;
@@ -1390,11 +1395,16 @@
   .home-caption6 {
     color: rgb(124, 124, 128);
     width: 100%;
-    font-size: 16px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 24px;
   }
   .home-heading3 {
     font-size: 36px;
+  }
+  .home-caption7 {
+    font-size: 18px;
   }
   .home-content12 {
     width: 427px;
@@ -1409,7 +1419,9 @@
   .home-caption8 {
     width: 100%;
     height: 110%;
-    font-size: 14px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-heading5 {
@@ -1435,7 +1447,9 @@
   }
   .home-content15 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-header23 {
@@ -1447,7 +1461,9 @@
   }
   .home-content16 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-header24 {
@@ -1459,7 +1475,8 @@
   }
   .home-content17 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-header25 {
@@ -1471,7 +1488,9 @@
   }
   .home-content18 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-header26 {
@@ -1483,7 +1502,8 @@
   }
   .home-content19 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
   .home-header27 {
@@ -1495,7 +1515,9 @@
   }
   .home-content20 {
     color: rgb(124, 124, 128);
-    font-size: 14px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
     line-height: 21px;
   }
 }
