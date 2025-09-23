@@ -1177,14 +1177,23 @@
   }
   .home-heading4 {
     color: rgb(255, 255, 255);
+    width: 478px;
     font-size: 40px;
     font-style: normal;
     font-weight: 400;
   }
   .home-caption8 {
     color: rgb(124, 124, 128);
+    width: 456px;
     font-size: 16px;
+    max-width: auto;
     line-height: 24px;
+  }
+  .home-square2 {
+    top: 240px;
+    right: -16px;
+    bottom: 0px;
+    height: 151px;
   }
   .home-image3 {
     width: 100%;
