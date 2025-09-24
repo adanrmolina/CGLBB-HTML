@@ -222,13 +222,13 @@
   width: 100%;
   display: flex;
   max-width: var(--dl-layout-size-maxwidth);
-  align-items: flex-end;
+  align-items: center;
   padding-top: var(--dl-layout-space-fiveunits);
   padding-left: var(--dl-layout-space-fiveunits);
   padding-right: var(--dl-layout-space-fiveunits);
-  flex-direction: row;
+  flex-direction: column;
   padding-bottom: var(--dl-layout-space-fiveunits);
-  justify-content: center;
+  justify-content: flex-end;
 }
  
 .home-content {
@@ -266,20 +266,38 @@
 .home-container16 {
   flex: 0 0 auto;
   width: 100%;
+  border: 2px dashed rgba(120, 120, 120, 0.4);
+  height: 100px;
+  display: flex;
+  align-items: flex-start;
+}
+ 
+.home-container17 {
+  flex: 0 0 auto;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
  
-.home-container17 {
+.home-container18 {
   width: 100%;
 }
  
-.home-container18 {
+.home-container19 {
   display: contents;
 }
  
-.home-container19 {
+.home-container20 {
+  flex: 0 0 auto;
+  width: 100%;
+  border: 2px dashed rgba(120, 120, 120, 0.4);
+  height: 100px;
+  display: flex;
+  align-items: flex-start;
+}
+ 
+.home-faq {
   flex: 0 0 auto;
   width: 100%;
   display: flex;
@@ -287,7 +305,7 @@
   justify-content: flex-start;
 }
  
-.home-container20 {
+.home-container21 {
   width: 100%;
   height: 923px;
   max-width: auto;
@@ -295,11 +313,20 @@
   min-height: 100%;
 }
  
-.home-container21 {
+.home-container22 {
   display: contents;
 }
  
-.home-container22 {
+.home-container23 {
+  flex: 0 0 auto;
+  width: 100%;
+  border: 2px dashed rgba(120, 120, 120, 0.4);
+  height: 100px;
+  display: flex;
+  align-items: flex-start;
+}
+ 
+.home-container24 {
   flex: 0 0 auto;
   width: 100%;
   display: flex;
@@ -307,7 +334,7 @@
   justify-content: center;
 }
  
-.home-container23 {
+.home-container25 {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -361,7 +388,7 @@
   .home-heading2 {
     font-size: 50px;
   }
-  .home-container17 {
+  .home-container18 {
     width: 677px;
   }
   .home-image1 {
@@ -396,7 +423,7 @@
   .home-heading2 {
     font-size: 36px;
   }
-  .home-container17 {
+  .home-container18 {
     width: 681px;
   }
 }
@@ -434,7 +461,7 @@
     text-align: center;
     font-weight: 500;
   }
-  .home-container17 {
+  .home-container18 {
     width: 478px;
     padding-bottom: 0px;
   }
