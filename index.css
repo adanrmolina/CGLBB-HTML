@@ -291,6 +291,9 @@
 .home-container20 {
   width: 100%;
   height: 923px;
+  max-width: auto;
+  max-height: 100%;
+  min-height: 100%;
 }
  
 .home-container21 {
@@ -364,7 +367,8 @@
   }
   .home-container17 {
     width: 677px;
-    height: 287px;
+    height: 257px;
+    min-height: auto;
   }
   .home-image1 {
     height: 4rem;
@@ -400,7 +404,7 @@
   }
   .home-container17 {
     width: 681px;
-    height: 286px;
+    height: 267px;
   }
 }
  
@@ -442,7 +446,7 @@
   }
   .home-container17 {
     width: 478px;
-    height: 450px;
+    height: 356px;
     padding-bottom: 0px;
   }
   .home-image1 {
