@@ -172,35 +172,34 @@
                   const isFacebook  = u => /facebook\.com\/.*\/videos\//i.test(u||'');
                   const isTwitterX  = u => /(?:twitter\.com|x\.com)\/[^/]+\/status\/\d+/i.test(u||'');
 
-                const ICONS = {
-                  youtube: `
-                    <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                      <path fill='#fff' d='M23.5 6.2a4 4 0 0 0-2.8-2.8C18.9 3 12 3 12 3s-6.9 0-8.7.4A4 4 0 0 0 .5 6.2 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.8 4 4 0 0 0 2.8 2.8C4.9 21 12 21 12 21s6.9 0 8.7-.4a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.8z'/>
-                      <path fill='#000' d='M9.75 15.5v-7l6 3.5-6 3.5z'/>
-                    </svg>
-                  `,
-                  instagram: `
-                    <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                      <path fill='#fff' d='M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.4.4.6.2 1 .4 1.5.9.5.5.7.9.9 1.5.2.5.3 1.2.4 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.4-.2.6-.4 1-.9 1.5-.5.5-.9.7-1.5.9-.5.2-1.2.3-2.4.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.4-.4-.6-.2-1-.4-1.5-.9-.5-.5-.7-.9-.9-1.5-.2-.5-.3-1.2-.4-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.4.2-.6.4-1 .9-1.5.5-.5.9-.7 1.5-.9.5-.2 1.2-.3 2.4-.4C8.4 2.2 8.8 2.2 12 2.2z'/>
-                    </svg>
-                  `,
-                  facebook: `
-                    <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                      <path fill='#fff' d='M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12'/>
-                    </svg>
-                  `,
-                  x: `
-                    <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                      <path fill='#fff' d='M18.244 2H21l-6.5 7.43L22.5 22H16l-4.7-6.19L5.8 22H3l7-8-6.5-8H8l4.2 5.59L18.244 2Z'/>
-                    </svg>
-                  `,
-                  link: `
-                    <svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
-                      <path fill='#fff' d='M3.9 12a4.1 4.1 0 0 1 4.1-4.1h3v2h-3a2.1 2.1 0 0 0 0 4.2h3v2h-3A4.1 4.1 0 0 1 3.9 12Zm6-1h4.2v2H9.9v-2Zm6.2-3h-3v2h3a2.1 2.1 0 0 1 0 4.2h-3v2h3a4.1 4.1 0 1 0 0-8.2Z'/>
-                    </svg>
-                  `
-                };
-
+                  const ICONS = {
+                    youtube: `
+                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
+                        <path fill='#fff' d='M23.5 6.2a4 4 0 0 0-2.8-2.8C18.9 3 12 3 12 3s-6.9 0-8.7.4A4 4 0 0 0 .5 6.2 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.8 4 4 0 0 0 2.8 2.8C4.9 21 12 21 12 21s6.9 0 8.7-.4a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.8z'/>
+                        <path fill='#000' d='M9.75 15.5v-7l6 3.5-6 3.5z'/>
+                      </svg>
+                    `,
+                    instagram: `
+                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
+                        <path fill='#fff' d='M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.4.4.6.2 1 .4 1.5.9.5.5.7.9.9 1.5.2.5.3 1.2.4 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.4-.2.6-.4 1-.9 1.5-.5.5-.9.7-1.5.9-.5.2-1.2.3-2.4.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.4-.4-.6-.2-1-.4-1.5-.9-.5-.5-.7-.9-.9-1.5-.2-.5-.3-1.2-.4-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.4.2-.6.4-1 .9-1.5.5-.5.9-.7 1.5-.9.5-.2 1.2-.3 2.4-.4C8.4 2.2 8.8 2.2 12 2.2z'/>
+                      </svg>
+                    `,
+                    facebook: `
+                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
+                        <path fill='#fff' d='M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12'/>
+                      </svg>
+                    `,
+                    x: `
+                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
+                        <path fill='#fff' d='M18.244 2H21l-6.5 7.43L22.5 22H16l-4.7-6.19L5.8 22H3l7-8-6.5-8H8l4.2 5.59L18.244 2Z'/>
+                      </svg>
+                    `,
+                    link: `
+                      <svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
+                        <path fill='#fff' d='M3.9 12a4.1 4.1 0 0 1 4.1-4.1h3v2h-3a2.1 2.1 0 0 0 0 4.2h3v2h-3A4.1 4.1 0 0 1 3.9 12Zm6-1h4.2v2H9.9v-2Zm6.2-3h-3v2h3a2.1 2.1 0 0 1 0 4.2h-3v2h3a4.1 4.1 0 1 0 0-8.2Z'/>
+                      </svg>
+                    `
+                  };
 
                   const isProblematicPlatform = u => isYouTube(u)||isInstagram(u)||isFacebook(u)||isTwitterX(u);
                   const platformMeta = u => {
@@ -227,10 +226,11 @@
                     if(isProblematicPlatform(s)){
                       const m=platformMeta(s); const w=document.createElement('div');
                       w.style.cssText='margin:0 0 clamp(10px,1.5vw,16px) 0;';
-                      w.innerHTML=`<div style='display:flex;align-items:center;gap:12px;'>
-                        ${ICONS[m?m.key:'link']}
-                        <a href='${s}' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline;font-weight:600;'>Ver en ${m?m.name:'enlace'}</a>
-                      </div>`;
+                      w.innerHTML=`
+                        <div style='display:flex;align-items:center;gap:12px;'>
+                          ${ICONS[m?m.key:'link']}
+                          <a href='${s}' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline;font-weight:600;'>Ver en ${m?m.name:'enlace'}</a>
+                        </div>`;
                       return w;
                     }
                     if(isVideoFile(s)){
@@ -262,14 +262,19 @@
                   }
 
                   async function loadFeed(){
-                    const feed=document.getElementById('feed'); feed.innerHTML='';
-                    const r=await fetch(jsonUrl,{cache:'no-store'}); const t=await r.text();
-                    const s=t.indexOf('setResponse('), e=t.lastIndexOf(');');
-                    if (s === -1 || e === -1) {
-                  feed.innerHTML = '<p style='color:#f88'>No pude leer el Sheet</p>';
-                  return;
-                }
-                const data=JSON.parse(t.substring(s+'setResponse('.length,e));
+                    const feed=document.getElementById('feed');
+                    feed.innerHTML='';
+
+                    const res=await fetch(jsonUrl,{cache:'no-store'});
+                    const txt=await res.text();
+                    const start=txt.indexOf('setResponse('), end=txt.lastIndexOf(');');
+                    if (start === -1 || end === -1) {
+                      feed.innerHTML = `<p style='color:#f88'>No pude leer el Sheet</p>`;
+                      return;
+                    }
+
+                    const prefixLen = 'setResponse('.length;
+                    const data=JSON.parse(txt.substring(start + prefixLen, end));
                     let rows=data?.table?.rows||[];
                     if(rows.length>0) rows=rows.slice(1).reverse(); // último arriba
 
@@ -298,7 +303,7 @@
                         transition: transform .2s ease, box-shadow .2s ease;
                         color:#fff;
                         font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-                        ${!hasMedia ? 'margin: 32px 0;' : ''} /* extra espacio si NO hay media */
+                        ${!hasMedia ? 'margin: 32px 0;' : ''}
                       `;
                       card.onmouseenter=()=>{card.style.boxShadow='0 6px 18px rgba(0,0,0,.4)'; card.style.transform='translateY(-2px)';};
                       card.onmouseleave=()=>{card.style.boxShadow='0 2px 10px rgba(0,0,0,.3)'; card.style.transform='none';};
