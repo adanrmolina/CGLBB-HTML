@@ -273,7 +273,6 @@
  
 .home-container17 {
   width: 100%;
-  height: 237px;
 }
  
 .home-container18 {
@@ -362,13 +361,8 @@
   .home-heading2 {
     font-size: 50px;
   }
-  .home-container16 {
-    height: 100%;
-  }
   .home-container17 {
     width: 677px;
-    height: 257px;
-    min-height: auto;
   }
   .home-image1 {
     height: 4rem;
@@ -404,7 +398,6 @@
   }
   .home-container17 {
     width: 681px;
-    height: 267px;
   }
 }
  
@@ -441,12 +434,8 @@
     text-align: center;
     font-weight: 500;
   }
-  .home-container16 {
-    height: 100%;
-  }
   .home-container17 {
     width: 478px;
-    height: 356px;
     padding-bottom: 0px;
   }
   .home-image1 {
