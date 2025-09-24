@@ -265,8 +265,11 @@
                     const feed=document.getElementById('feed'); feed.innerHTML='';
                     const r=await fetch(jsonUrl,{cache:'no-store'}); const t=await r.text();
                     const s=t.indexOf('setResponse('), e=t.lastIndexOf(');');
-                    if(s===-1||e===-1){feed.innerHTML='<p style='color:#f88'>No pude leer el Sheet</p>';return;}
-                    const data=JSON.parse(t.substring(s+'setResponse('.length,e));
+                    if (s === -1 || e === -1) {
+                  feed.innerHTML = '<p style='color:#f88'>No pude leer el Sheet</p>';
+                  return;
+                }
+                const data=JSON.parse(t.substring(s+'setResponse('.length,e));
                     let rows=data?.table?.rows||[];
                     if(rows.length>0) rows=rows.slice(1).reverse(); // último arriba
 
