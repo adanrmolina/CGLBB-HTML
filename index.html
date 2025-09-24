@@ -383,15 +383,15 @@
               </section>
 
               <style>
-                /* Grid fluido: se adapta solo a 1/2/3/4 columnas según ancho */
+                /* Grid fluido: se adapta a 1/2/3/4 columnas según ancho */
                 .stats-grid{
                   display:grid;
                   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                   align-items:stretch;
 
                   /* Separadores con gap como “líneas” */
-                  gap: 1px;                               /* grosor del separador */
-                  background: rgba(255,255,255,0.15);     /* color de los separadores */
+                  gap: 1px;                                /* grosor del separador */
+                  background: rgba(255,255,255,0.15);      /* color de los separadores */
                   border-top: 1px solid rgba(255,255,255,0.15);
                   border-left: 1px solid rgba(255,255,255,0.15);
                 }
@@ -426,8 +426,8 @@
 
                   // --- Utils ---
                   const clean   = s => (s||'').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
-                  const cellVal = c => (c?.v == null ? '' : c.v);   // valor crudo (número esperado en Col A)
-                  const cellStr = c => clean(c?.f ?? c?.v ?? '');   // string (tipo/unidad y texto)
+                  const cellVal = c => (c?.v == null ? '' : c.v);   // Col A: número crudo esperado
+                  const cellStr = c => clean(c?.f ?? c?.v ?? '');   // Col B/C: string (prefiere formateado)
 
                   function isHeaderRow(row){
                     const a = cellStr(row?.c?.[0]).toLowerCase();
@@ -449,42 +449,36 @@
                     return n.toLocaleString();
                   }
 
-                  // Muestra valor final con unidad
-                  function formatValueStatic(n, type){
-                    const t = clean(type).toLowerCase();
-                    if (typeof n === 'number' && isFinite(n)){
-                      if (t === '%') return formatCompact(n) + '%';
-                      if (t === '$') return '$' + formatCompact(n);
-                      if (t)         return formatCompact(n) + ' ' + t;
-                      return formatCompact(n);
-                    }
-                    return t ? `${n} ${t}` : `${n}`;
-                  }
-
                   // Easing para la animación de conteo
                   const easeOutCubic = x => 1 - Math.pow(1 - x, 3);
 
                   // Anima de 0 → target con abreviación y unidad
                   function animateCount(el, target, type, duration=1200){
                     const unit = clean(type).toLowerCase();
-                    const start = performance.now();
 
-                    // Si no es número, no animamos
+                    // Si no es número, no animamos: solo texto final
                     if (typeof target !== 'number' || !isFinite(target)){
-                      el.textContent = formatValueStatic(target, unit);
+                      el.textContent = finalText(target, unit);
                       return;
                     }
 
+                    const start = performance.now();
                     function frame(now){
                       const p = Math.min(1, (now - start) / duration);
                       const val = target * easeOutCubic(p);
-                      if (unit === '%')      el.textContent = formatCompact(val) + '%';
-                      else if (unit === '$') el.textContent = '$' + formatCompact(val);
-                      else if (unit)         el.textContent = formatCompact(val) + ' ' + unit;
-                      else                   el.textContent = formatCompact(val);
+                      el.textContent = finalText(val, unit);
                       if (p < 1) requestAnimationFrame(frame);
                     }
                     requestAnimationFrame(frame);
+                  }
+
+                  function finalText(n, unit){
+                    if (typeof n === 'number' && isFinite(n)){
+                      if (unit === '%') return formatCompact(n) + '%';
+                      if (unit === '$') return '$' + formatCompact(n);
+                      return unit ? `${formatCompact(n)} ${unit}` : formatCompact(n);
+                    }
+                    return unit ? `${n} ${unit}` : String(n);
                   }
 
                   // Observa visibilidad para disparar animación una sola vez
@@ -503,7 +497,7 @@
                     document.querySelectorAll('.stats-grid .value[data-target]').forEach(el => io.observe(el));
                   }
 
-                  async function loadStats(){
+                  async function loadStatsFetch(){
                     const grid = document.querySelector('#stats .stats-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
@@ -512,19 +506,25 @@
                       const res = await fetch(jsonUrl,{cache:'no-store'});
                       const txt = await res.text();
                       const a = txt.indexOf('setResponse('), b = txt.lastIndexOf(');');
-                      if (a === -1 || b === -1) throw new Error('GViz no válido');
+                      if (a === -1 || b === -1){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (GViz).</div>`;
+                        return;
+                      }
                       const data = JSON.parse(txt.substring(a + 'setResponse('.length, b));
 
                       let rows = data?.table?.rows || [];
-                      if (!rows.length) return;
+                      if (!rows.length){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
+                        return;
+                      }
                       if (isHeaderRow(rows[0])) rows = rows.slice(1);
 
                       const frag = document.createDocumentFragment();
                       rows.forEach(r=>{
                         const c    = r?.c || [];
-                        const raw  = cellVal(c[0]);     // Col A: número
-                        const type = cellStr(c[1]);     // Col B: unidad/tipo (%,$,pz,...)
-                        const text = cellStr(c[2]);     // Col C: texto/label
+                        const raw  = cellVal(c[0]);   // A: número esperado
+                        const type = cellStr(c[1]);   // B: unidad/tipo (%,$,pz,...)
+                        const text = cellStr(c[2]);   // C: label
 
                         // Parseo de número seguro
                         let n = raw;
@@ -533,30 +533,33 @@
                           if (!isNaN(parsed)) n = parsed;
                         }
 
-                        const div = document.createElement('div');
+                        const div   = document.createElement('div');
                         div.className = 'cell';
 
+                        const pVal  = document.createElement('p');
+                        pVal.className = 'value';
+
+                        const pLbl  = document.createElement('p');
+                        pLbl.className = 'label';
+                        pLbl.textContent = text || '';
+
+                        // Si no es numérico, sin animación
                         if (typeof n !== 'number' || !isFinite(n)){
-                          // Sin animación si no es numérico
-                          div.innerHTML = `
-                            <p class='value'>${formatValueStatic(raw, type)}</p>
-                            <p class='label'>${text || ''}</p>
-                          `;
+                          pVal.textContent = finalText(raw, clean(type).toLowerCase());
                         } else {
-                          // Valor inicial 0 (abreviado) con unidad
+                          // Valor inicial 0 con unidad abreviada y data-* para animar
                           const unit = clean(type).toLowerCase();
-                          const initial =
+                          pVal.dataset.target = String(n);
+                          pVal.dataset.type = unit;
+                          pVal.textContent =
                             unit === '%' ? formatCompact(0) + '%' :
                             unit === '$' ? '$' + formatCompact(0) :
                             unit ? formatCompact(0) + ' ' + unit :
                             formatCompact(0);
-
-                          div.innerHTML = `
-                            <p class='value' data-target='${n}' data-type='${clean(type)}'>${initial}</p>
-                            <p class='label'>${text || ''}</p>
-                          `;
                         }
 
+                        div.appendChild(pVal);
+                        div.appendChild(pLbl);
                         frag.appendChild(div);
                       });
 
@@ -564,11 +567,95 @@
                       mountObserver();
                     }catch(e){
                       console.error(e);
-                      grid.innerHTML = '<div style='padding:16px;color:#f88'>Error al leer la hoja</div>';
+                      const grid = document.querySelector('#stats .stats-grid');
+                      if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
 
-                  window.addEventListener('load', loadStats);
+                  // ---- Fallback JSONP (por si CORS en IONOS rompe fetch) ----
+                  /*
+                  function loadGVizJSONP(url, onData, onError){
+                    window.google = window.google || {};
+                    window.google.visualization = window.google.visualization || {};
+                    window.google.visualization.Query = {
+                      setResponse: function(payload){
+                        try { onData(payload); }
+                        catch(e){ console.error(e); onError && onError(e); }
+                        finally { if (s && s.parentNode) s.parentNode.removeChild(s); }
+                      }
+                    };
+                    const s = document.createElement('script');
+                    s.src = url; s.async = true;
+                    s.onerror = () => { onError && onError(new Error('GViz script error')); if (s && s.parentNode) s.parentNode.removeChild(s); };
+                    document.head.appendChild(s);
+                  }
+
+                  function loadStatsJSONP(){
+                    const grid = document.querySelector('#stats .stats-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    loadGVizJSONP(jsonUrl, (data)=>{
+                      let rows = data?.table?.rows || [];
+                      if (!rows.length){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
+                        return;
+                      }
+                      if (isHeaderRow(rows[0])) rows = rows.slice(1);
+
+                      const frag = document.createDocumentFragment();
+                      rows.forEach(r=>{
+                        const c    = r?.c || [];
+                        const raw  = cellVal(c[0]);
+                        const type = cellStr(c[1]);
+                        const text = cellStr(c[2]);
+
+                        let n = raw;
+                        if (typeof n !== 'number'){
+                          const parsed = parseFloat(clean(String(n)).replace(/,/g,''));
+                          if (!isNaN(parsed)) n = parsed;
+                        }
+
+                        const div   = document.createElement('div');
+                        div.className = 'cell';
+
+                        const pVal  = document.createElement('p');
+                        pVal.className = 'value';
+
+                        const pLbl  = document.createElement('p');
+                        pLbl.className = 'label';
+                        pLbl.textContent = text || '';
+
+                        if (typeof n !== 'number' || !isFinite(n)){
+                          pVal.textContent = finalText(raw, clean(type).toLowerCase());
+                        } else {
+                          const unit = clean(type).toLowerCase();
+                          pVal.dataset.target = String(n);
+                          pVal.dataset.type = unit;
+                          pVal.textContent =
+                            unit === '%' ? formatCompact(0) + '%' :
+                            unit === '$' ? '$' + formatCompact(0) :
+                            unit ? formatCompact(0) + ' ' + unit :
+                            formatCompact(0);
+                        }
+
+                        div.appendChild(pVal);
+                        div.appendChild(pLbl);
+                        frag.appendChild(div);
+                      });
+
+                      grid.appendChild(frag);
+                      mountObserver();
+                    }, ()=>{
+                      grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (JSONP).</div>`;
+                    });
+                  }
+                  */
+
+                  // Usa fetch por defecto:
+                  window.addEventListener('load', loadStatsFetch);
+                  // Si prefieres JSONP, comenta la línea de arriba y descomenta:
+                  // window.addEventListener('load', loadStatsJSONP);
                 })();
               </script>
             </div>
@@ -634,7 +721,7 @@
                   color:rgba(255,255,255,.85);
                   font-size:clamp(14px,2.1vw,16px);
                   line-height:1.6;
-                  white-space:pre-wrap;
+                  white-space:pre-wrap; /* respeta saltos en la hoja */
                 }
 
                 @media (max-width:800px){
@@ -659,21 +746,26 @@
                            (b === 'answer'   || b === 'respuesta');
                   }
 
-                  async function loadFAQ(){
+                  async function loadFAQFetch(){
                     const grid = document.querySelector('#faq .faq-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
 
                     try{
-                      const res = await fetch(jsonUrl, {cache:'no-store'});
+                      const res = await fetch(jsonUrl, { cache:'no-store' });
                       const txt = await res.text();
                       const i = txt.indexOf('setResponse('), j = txt.lastIndexOf(');');
-                      if (i === -1 || j === -1) throw new Error('GViz wrapper no encontrado');
+                      if (i === -1 || j === -1){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (GViz).</div>`;
+                        return;
+                      }
                       const data = JSON.parse(txt.substring(i + 'setResponse('.length, j));
 
                       let rows = data?.table?.rows || [];
-                      if (!rows.length){ grid.innerHTML = '<div style='padding:16px;color:#f88'>Hoja vacía.</div>'; return; }
-
+                      if (!rows.length){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
+                        return;
+                      }
                       if (isHeaderRow(rows[0])) rows = rows.slice(1);
 
                       const frag = document.createDocumentFragment();
@@ -685,20 +777,94 @@
 
                         const item = document.createElement('article');
                         item.className = 'faq-item';
-                        item.innerHTML = `
-                          <h3 class='q'>${q}</h3>
-                          <p class='a'>${a}</p>
-                        `;
+
+                        const h3 = document.createElement('h3');
+                        h3.className = 'q';
+                        h3.textContent = q || '';
+
+                        const p = document.createElement('p');
+                        p.className = 'a';
+                        p.textContent = a || '';
+
+                        item.appendChild(h3);
+                        item.appendChild(p);
                         frag.appendChild(item);
                       });
+
                       grid.appendChild(frag);
                     }catch(err){
                       console.error(err);
-                      grid.innerHTML = '<div style='padding:16px;color:#f88'>Error al leer la hoja</div>';
+                      const grid = document.querySelector('#faq .faq-grid');
+                      if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
 
-                  window.addEventListener('load', loadFAQ);
+                  // ---- Fallback JSONP (por si CORS en IONOS rompe fetch) ----
+                  // Descomenta para usar JSONP en lugar de fetch:
+                  /*
+                  function loadGVizJSONP(url, onData, onError){
+                    window.google = window.google || {};
+                    window.google.visualization = window.google.visualization || {};
+                    window.google.visualization.Query = {
+                      setResponse: function(payload){
+                        try { onData(payload); }
+                        catch(e){ console.error(e); onError && onError(e); }
+                        finally { if (s && s.parentNode) s.parentNode.removeChild(s); }
+                      }
+                    };
+                    const s = document.createElement('script');
+                    s.src = url; s.async = true;
+                    s.onerror = () => { onError && onError(new Error('GViz script error')); if (s && s.parentNode) s.parentNode.removeChild(s); };
+                    document.head.appendChild(s);
+                  }
+
+                  function loadFAQ_JSONP(){
+                    const grid = document.querySelector('#faq .faq-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    loadGVizJSONP(jsonUrl, (data)=>{
+                      let rows = data?.table?.rows || [];
+                      if (!rows.length){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
+                        return;
+                      }
+                      if (isHeaderRow(rows[0])) rows = rows.slice(1);
+
+                      const frag = document.createDocumentFragment();
+                      rows.forEach(r=>{
+                        const c = r?.c || [];
+                        const q = cellText(c[0]);
+                        const a = cellText(c[1]);
+                        if (!q && !a) return;
+
+                        const item = document.createElement('article');
+                        item.className = 'faq-item';
+
+                        const h3 = document.createElement('h3');
+                        h3.className = 'q';
+                        h3.textContent = q || '';
+
+                        const p = document.createElement('p');
+                        p.className = 'a';
+                        p.textContent = a || '';
+
+                        item.appendChild(h3);
+                        item.appendChild(p);
+                        frag.appendChild(item);
+                      });
+
+                      grid.appendChild(frag);
+                    }, ()=>{
+                      grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (JSONP).</div>`;
+                    });
+                  }
+                  */
+
+                  // Usa fetch por defecto
+                  window.addEventListener('load', loadFAQFetch);
+                  // Si prefieres JSONP, comenta la línea de arriba y descomenta:
+                  // window.addEventListener('load', loadFAQ_JSONP);
                 })();
               </script>
             </div>
