@@ -116,6 +116,94 @@
                 </svg>
               </div>
             </div>
+            <div>
+              <div class="home-container14">
+                <!-- 🔘 Toggle EN/ES — un solo embed code -->
+                <div id="lang-toggle-teleport" style="display:inline-block">
+                  <button
+                    id="lang-toggle-btn"
+                    aria-label="Cambiar idioma"
+                    title="Cambiar idioma"
+                    style="
+      all: unset;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 40px; height: 32px; padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.10);
+      color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      letter-spacing: .5px; border-radius: 8px; cursor: pointer;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      transition: transform .08s ease;
+    "
+                  >
+                    EN
+                  </button>
+
+                  <style>
+                    /* Hover/active mínimos (por si tu tema es claro/oscuro) */
+                    #lang-toggle-teleport #lang-toggle-btn:hover{
+                      filter: brightness(1.15);
+                    }
+                    #lang-toggle-teleport #lang-toggle-btn:active{
+                      transform: translateY(1px);
+                    }
+
+                    /* ❗Si prefieres que flote en la pantalla, descomenta:
+                    #lang-toggle-teleport{
+                      position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+                    } */
+                  </style>
+
+                  <script>
+                    (function () {
+                      // Clave de almacenamiento y valores válidos
+                      const STORAGE_KEY = 'site:lang';
+                      const LANGS = ['EN', 'ES'];
+                      const DEFAULT_LANG = 'EN';
+
+                      // Elementos del embed (aseguramos alcance local)
+                      const root = document.getElementById('lang-toggle-teleport');
+                      if (!root) return;
+                      const btn = root.querySelector('#lang-toggle-btn');
+
+                      // Estado: intenta cargar de localStorage; si no, usa default
+                      let current = (function(){
+                        try { return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG; }
+                        catch(e){ return DEFAULT_LANG; }
+                      })();
+
+                      // Expone variable global simple para que puedas leerla en otro script
+                      function expose(lang){
+                        window.APP_LANG = lang;                                  // <-- variable global
+                        document.documentElement.dataset.lang = lang;            // data-lang en <html>
+                        // document.documentElement.setAttribute('lang', lang.toLowerCase()); // <- opcional
+                      }
+
+                      // Renderiza UI y persiste
+                      function apply(lang){
+                        btn.textContent = lang;
+                        btn.setAttribute('data-lang', lang);
+                        expose(lang);
+                        try { localStorage.setItem(STORAGE_KEY, lang); } catch(e){}
+                        // Dispara un CustomEvent por si luego quieres “escuchar” cambios
+                        window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
+                      }
+
+                      // Toggle al hacer clic
+                      btn.addEventListener('click', function(){
+                        const i = LANGS.indexOf(current);
+                        current = LANGS[(i + 1) % LANGS.length];
+                        apply(current);
+                      });
+
+                      // Init
+                      if (!LANGS.includes(current)) current = DEFAULT_LANG;
+                      apply(current);
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
           </header>
           <video
             src="public/video.mp4"
@@ -140,9 +228,9 @@
             </div>
           </div>
         </section>
-        <div class="home-container13">
-          <div class="home-container14">
-            <div class="home-container15">
+        <div class="home-container15">
+          <div class="home-container16">
+            <div class="home-container17">
               <section
                 id="feed"
                 style="
@@ -162,7 +250,13 @@
                   const SHEET_ID = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-                  // Detectores / coincidencias
+                  // --- util idioma ---
+                  const getCurrentLang = () => {
+                    const appLang = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                    return (appLang === 'EN') ? 'EN' : 'ES';
+                  };
+
+                  // --- detectores / coincidencias (igual que antes) ---
                   const isVideoFile = u => /\.(mp4|webm|ogg)(\?|#|$)/i.test(u||'');
                   const vimeoMatch  = u => (u||'').match(/vimeo\.com\/(\d+)/);
                   const tiktokMatch = u => (u||'').match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
@@ -173,32 +267,11 @@
                   const isTwitterX  = u => /(?:twitter\.com|x\.com)\/[^/]+\/status\/\d+/i.test(u||'');
 
                   const ICONS = {
-                    youtube: `
-                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                        <path fill='#fff' d='M23.5 6.2a4 4 0 0 0-2.8-2.8C18.9 3 12 3 12 3s-6.9 0-8.7.4A4 4 0 0 0 .5 6.2 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.8 4 4 0 0 0 2.8 2.8C4.9 21 12 21 12 21s6.9 0 8.7-.4a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.8z'/>
-                        <path fill='#000' d='M9.75 15.5v-7l6 3.5-6 3.5z'/>
-                      </svg>
-                    `,
-                    instagram: `
-                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                        <path fill='#fff' d='M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.4.4.6.2 1 .4 1.5.9.5.5.7.9.9 1.5.2.5.3 1.2.4 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.4-.2.6-.4 1-.9 1.5-.5.5-.9.7-1.5.9-.5.2-1.2.3-2.4.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.4-.4-.6-.2-1-.4-1.5-.9-.5-.5-.7-.9-.9-1.5-.2-.5-.3-1.2-.4-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.4.2-.6.4-1 .9-1.5.5-.5.9-.7 1.5-.9.5-.2 1.2-.3 2.4-.4C8.4 2.2 8.8 2.2 12 2.2z'/>
-                      </svg>
-                    `,
-                    facebook: `
-                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                        <path fill='#fff' d='M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12'/>
-                      </svg>
-                    `,
-                    x: `
-                      <svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'>
-                        <path fill='#fff' d='M18.244 2H21l-6.5 7.43L22.5 22H16l-4.7-6.19L5.8 22H3l7-8-6.5-8H8l4.2 5.59L18.244 2Z'/>
-                      </svg>
-                    `,
-                    link: `
-                      <svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
-                        <path fill='#fff' d='M3.9 12a4.1 4.1 0 0 1 4.1-4.1h3v2h-3a2.1 2.1 0 0 0 0 4.2h3v2h-3A4.1 4.1 0 0 1 3.9 12Zm6-1h4.2v2H9.9v-2Zm6.2-3h-3v2h3a2.1 2.1 0 0 1 0 4.2h-3v2h3a4.1 4.1 0 1 0 0-8.2Z'/>
-                      </svg>
-                    `
+                    youtube: `<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path fill='#fff' d='M23.5 6.2a4 4 0 0 0-2.8-2.8C18.9 3 12 3 12 3s-6.9 0-8.7.4A4 4 0 0 0 .5 6.2 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.8 4 4 0 0 0 2.8 2.8C4.9 21 12 21 12 21s6.9 0 8.7-.4a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.8z'/><path fill='#000' d='M9.75 15.5v-7l6 3.5-6 3.5z'/></svg>`,
+                    instagram: `<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path fill='#fff' d='M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.4.4.6.2 1 .4 1.5.9.5.5.7.9.9 1.5.2.5.3 1.2.4 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.4-.2.6-.4 1-.9 1.5-.5.5-.9.7-1.5.9-.5.2-1.2.3-2.4.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.4-.4-.6-.2-1-.4-1.5-.9-.5-.5-.7-.9-.9-1.5-.2-.5-.3-1.2-.4-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.4.2-.6.4-1 .9-1.5.5-.5.9-.7 1.5-.9.5-.2 1.2-.3 2.4-.4C8.4 2.2 8.8 2.2 12 2.2z'/></svg>`,
+                    facebook: `<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path fill='#fff' d='M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12'/></svg>`,
+                    x: `<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path fill='#fff' d='M18.244 2H21l-6.5 7.43L22.5 22H16l-4.7-6.19L5.8 22H3l7-8-6.5-8H8l4.2 5.59L18.244 2Z'/></svg>`,
+                    link: `<svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'><path fill='#fff' d='M3.9 12a4.1 4.1 0 0 1 4.1-4.1h3v2h-3a2.1 2.1 0 0 0 0 4.2h3v2h-3A4.1 4.1 0 0 1 3.9 12Zm6-1h4.2v2H9.9v-2Zm6.2-3h-3v2h3a2.1 2.1 0 0 1 0 4.2h-3v2h3a4.1 4.1 0 1 0 0-8.2Z'/></svg>`
                   };
 
                   const isProblematicPlatform = u => isYouTube(u)||isInstagram(u)||isFacebook(u)||isTwitterX(u);
@@ -211,26 +284,35 @@
                     return null;
                   };
 
-                  function createBoxedIframe(src,{ratio='16/9',rounded='12px'}={}){
+                  function createBoxedIframe(src,{ratio='16/9',rounded='12px'}={}) {
                     const b=document.createElement('div');
                     b.style.cssText=`position:relative;width:100%;margin:0 auto clamp(10px,1.5vw,16px);aspect-ratio:${ratio};border-radius:${rounded};overflow:hidden;background:#000;max-height:85vh;`;
                     const i=document.createElement('iframe');
                     i.src=src; i.loading='lazy'; i.allowFullscreen=true;
                     i.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;display:block;';
-                    b.appendChild(i); return b;
+                    b.appendChild(i);
+                    return b;
                   }
 
-                  function renderMedia({url,poster}){
+                  function renderMedia({url,poster}) {
                     const s=(url||'').trim();
                     if(!s) return null;
                     if(isProblematicPlatform(s)){
-                      const m=platformMeta(s); const w=document.createElement('div');
+                      const m=platformMeta(s);
+                      const w=document.createElement('div');
                       w.style.cssText='margin:0 0 clamp(10px,1.5vw,16px) 0;';
-                      w.innerHTML=`
-                        <div style='display:flex;align-items:center;gap:12px;'>
-                          ${ICONS[m?m.key:'link']}
-                          <a href='${s}' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline;font-weight:600;'>Ver en ${m?m.name:'enlace'}</a>
-                        </div>`;
+                      // Creación segura de elementos en lugar de innerHTML
+                      const row=document.createElement('div');
+                      row.style.cssText='display:flex;align-items:center;gap:12px;';
+                      const iconWrap=document.createElement('span');
+                      iconWrap.innerHTML = ICONS[m?m.key:'link'];
+                      const a=document.createElement('a');
+                      a.href=s; a.target='_blank'; a.rel='noopener';
+                      a.textContent=`Ver en ${m?m.name:'enlace'}`;
+                      a.style.cssText='color:#fff;text-decoration:underline;font-weight:600;';
+                      row.appendChild(iconWrap);
+                      row.appendChild(a);
+                      w.appendChild(row);
                       return w;
                     }
                     if(isVideoFile(s)){
@@ -244,7 +326,8 @@
                     const tk=tiktokMatch(s);if(tk) return createBoxedIframe(`https://www.tiktok.com/embed/${tk[1]}`,{ratio:'9/16'});
                     const gd=driveMatch(s); if(gd) return createBoxedIframe(`https://drive.google.com/file/d/${gd[1]}/preview`);
                     const img=document.createElement('img');
-                    img.src=s; img.alt=''; img.loading='lazy';
+                    img.src=s; img.alt='';
+                    img.loading='lazy';
                     img.style.cssText='display:block;width:100%;height:auto;border-radius:12px;margin:0 0 clamp(10px,1.5vw,16px) 0;object-fit:cover;';
                     return img;
                   }
@@ -261,36 +344,39 @@
                     return c;
                   }
 
-                  async function loadFeed(){
-                    const feed=document.getElementById('feed');
-                    feed.innerHTML='';
+                  // --- cache de datos y render dependiente de idioma ---
+                  let cachedRows = []; // filas crudas de gviz (array de {c:[{v:...}, ...]})
 
-                    const res=await fetch(jsonUrl,{cache:'no-store'});
-                    const txt=await res.text();
-                    const start=txt.indexOf('setResponse('), end=txt.lastIndexOf(');');
-                    if (start === -1 || end === -1) {
-                      feed.innerHTML = `<p style='color:#f88'>No pude leer el Sheet</p>`;
-                      return;
-                    }
+                  function mapRowToRecord(rowCells, lang) {
+                    // Estructura nueva:
+                    // A title_en (c[0]), B text_en (c[1]), C title_es (c[2]), D text_es (c[3]),
+                    // E media (c[4]), F link (c[5]), G poster (c[6])
+                    const c = rowCells || [];
+                    const title = (lang === 'EN')
+                      ? ((c[0]?.v ?? '') + '').trim()
+                      : ((c[2]?.v ?? '') + '').trim();
+                    const text  = (lang === 'EN')
+                      ? ((c[1]?.v ?? '') + '').trim()
+                      : ((c[3]?.v ?? '') + '').trim();
+                    const media  = ((c[4]?.v ?? '') + '').trim();
+                    const href   = ((c[5]?.v ?? '') + '').trim();
+                    const poster = ((c[6]?.v ?? '') + '').trim();
+                    return { title, text, media, href, poster };
+                  }
 
-                    const prefixLen = 'setResponse('.length;
-                    const data=JSON.parse(txt.substring(start + prefixLen, end));
-                    let rows=data?.table?.rows||[];
-                    if(rows.length>0) rows=rows.slice(1).reverse(); // último arriba
+                  function renderFeedForLang(lang) {
+                    const feed = document.getElementById('feed');
+                    if (!feed) return;
+                    feed.innerHTML = '';
 
-                    rows.forEach(r=>{
-                      const c=r.c||[];
-                      const titulo=((c[0]?.v??'')+'').trim();
-                      const texto=((c[1]?.v??'')+'').trim();
-                      const media=((c[2]?.v??'')+'').trim();
-                      const href=((c[3]?.v??'')+'').trim();
-                      const poster=((c[4]?.v??'')+'').trim();
+                    // invertimos para que lo último del sheet quede arriba (como en tu versión)
+                    const rows = cachedRows.slice().reverse();
 
-                      // Si no hay ni título ni texto, no mostramos nada
-                      if(!titulo && !texto) return;
+                    rows.forEach(r => {
+                      const rec = mapRowToRecord(r.c || [], lang);
 
-                      const hasMedia = !!media;
-                      const hasText  = !!texto;
+                      // Si no hay ni título ni texto, no se muestra (mantengo tu regla actual)
+                      if(!rec.title && !rec.text) return;
 
                       const card=document.createElement('article');
                       card.style.cssText=`
@@ -303,33 +389,29 @@
                         transition: transform .2s ease, box-shadow .2s ease;
                         color:#fff;
                         font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-                        ${!hasMedia ? 'margin: 32px 0;' : ''}
+                        ${!rec.media ? 'margin: 32px 0;' : ''}
                       `;
                       card.onmouseenter=()=>{card.style.boxShadow='0 6px 18px rgba(0,0,0,.4)'; card.style.transform='translateY(-2px)';};
                       card.onmouseleave=()=>{card.style.boxShadow='0 2px 10px rgba(0,0,0,.3)'; card.style.transform='none';};
 
-                      // Media (solo si existe)
-                      const mediaEl=renderMedia({url:media,poster});
-                      if(hasMedia && mediaEl) card.appendChild(mediaEl);
+                      const mediaEl = renderMedia({url:rec.media, poster:rec.poster});
+                      if(rec.media && mediaEl) card.appendChild(mediaEl);
 
-                      // Título (si hay)
-                      if (titulo) {
+                      if (rec.title) {
                         const h=document.createElement('h3');
-                        h.textContent=titulo;
+                        h.textContent=rec.title;
                         h.style.cssText='margin:0 0 8px 0;font-weight:800;font-size:clamp(18px,2.4vw,26px);line-height:1.3;color:#fff;';
                         card.appendChild(h);
                       }
 
-                      // Texto (si hay)
-                      if (hasText) {
-                        const textBlock=renderParagraphs(texto);
+                      if (rec.text) {
+                        const textBlock=renderParagraphs(rec.text);
                         card.appendChild(textBlock);
                       }
 
-                      // Link destino (si hay)
-                      if(href){
+                      if(rec.href){
                         const more=document.createElement('a');
-                        more.href=href; more.target='_blank'; more.rel='noopener';
+                        more.href=rec.href; more.target='_blank'; more.rel='noopener';
                         more.textContent='Abrir enlace';
                         more.style.cssText='display:inline-block;margin-top:10px;font-weight:600;text-decoration:underline;color:#fff;';
                         card.appendChild(more);
@@ -339,8 +421,47 @@
                     });
                   }
 
-                  // Esperar a que la página termine de cargar
-                  window.addEventListener('load', loadFeed);
+                  async function fetchOnceAndRenderInitial(){
+                    const feed=document.getElementById('feed');
+                    if (!feed) return;
+
+                    try{
+                      const res=await fetch(jsonUrl,{cache:'no-store'});
+                      const txt=await res.text();
+                      const start=txt.indexOf('setResponse('), end=txt.lastIndexOf(');');
+                      if (start === -1 || end === -1) {
+                        feed.innerHTML = `<p style='color:#f88'>No pude leer el Sheet</p>`;
+                        return;
+                      }
+                      const prefixLen = 'setResponse('.length;
+                      const data=JSON.parse(txt.substring(start + prefixLen, end));
+                      let rows=data?.table?.rows||[];
+                      // Ya NO hacemos slice(1) porque los encabezados reales vienen en data.table.cols,
+                      // y aquí asumimos que las primeras filas son datos (ajusta si tu sheet tiene una fila de título manual).
+                      cachedRows = rows;
+
+                      renderFeedForLang(getCurrentLang());
+                    }catch(err){
+                      console.error('Error cargando sheet:', err);
+                      feed.innerHTML = `<p style='color:#f88'>Error al cargar datos</p>`;
+                    }
+                  }
+
+                  // Inicial: al cargar página
+                  window.addEventListener('load', fetchOnceAndRenderInitial);
+
+                  // Redibujar al cambiar idioma
+                  window.addEventListener('languagechange', () => {
+                    renderFeedForLang(getCurrentLang());
+                  });
+
+                  // (opcional) Si tu botón solo cambia localStorage sin disparar el evento,
+                  // puedes observar cambios en storage desde otras pestañas:
+                  window.addEventListener('storage', (ev) => {
+                    if (ev.key === 'site:lang') {
+                      renderFeedForLang(getCurrentLang());
+                    }
+                  });
                 })();
               </script>
             </div>
@@ -364,9 +485,9 @@
             </a>
           </div>
         </section>
-        <div class="home-container16">
-          <div class="home-container17">
-            <div class="home-container18">
+        <div class="home-container18">
+          <div class="home-container19">
+            <div class="home-container20">
               <section
                 id="stats"
                 style="
@@ -383,24 +504,20 @@
               </section>
 
               <style>
-                /* Grid fluido: se adapta a 1/2/3/4 columnas según ancho */
                 .stats-grid{
                   display:grid;
                   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                   align-items:stretch;
-
-                  /* Separadores con gap como “líneas” */
-                  gap: 1px;                                /* grosor del separador */
-                  background: rgba(255,255,255,0.15);      /* color de los separadores */
+                  gap: 1px;
+                  background: rgba(255,255,255,0.15);
                   border-top: 1px solid rgba(255,255,255,0.15);
                   border-left: 1px solid rgba(255,255,255,0.15);
                 }
                 .stats-grid .cell{
-                  background: transparent; /* o un color si tu fondo no es oscuro */
+                  background: transparent;
                   text-align:center;
                   padding: clamp(20px,3vw,36px) clamp(10px,2vw,24px);
                 }
-
                 .stats-grid .value{
                   font-size: clamp(28px,6vw,64px);
                   line-height: 1.1;
@@ -424,22 +541,30 @@
                   const SHEET_ID = '1TJGk_lB4Zbq8CpdNfeB56MPkaEv_YREwUUwdc2qsF78';
                   const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-                  // --- Utils ---
+                  // ---------- Utils ----------
                   const clean   = s => (s||'').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
-                  const cellVal = c => (c?.v == null ? '' : c.v);   // Col A: número crudo esperado
-                  const cellStr = c => clean(c?.f ?? c?.v ?? '');   // Col B/C: string (prefiere formateado)
+                  const cellVal = c => (c?.v == null ? '' : c.v);                 // num/raw
+                  const cellStr = c => clean(c?.f ?? c?.v ?? '');                 // prefer formatted
 
+                  const getCurrentLang = () => {
+                    const appLang = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                    return appLang === 'EN' ? 'EN' : 'ES';
+                  };
+
+                  // Detecta si la primera fila parece encabezado
                   function isHeaderRow(row){
                     const a = cellStr(row?.c?.[0]).toLowerCase();
                     const b = cellStr(row?.c?.[1]).toLowerCase();
                     const c = cellStr(row?.c?.[2]).toLowerCase();
-                    const inA = ['estadistica','estadística','numero','número','valor'].includes(a);
-                    const inB = ['tipo','tip','unidad'].includes(b);
-                    const inC = ['texto','label','descripcion','descripción'].includes(c);
-                    return (inA && inB) || (inA && inC) || (inB && inC);
+                    const d = cellStr(row?.c?.[3]).toLowerCase();
+                    const inA = ['statistic','estadistica','estadística','numero','número','valor'].includes(a);
+                    const inB = ['unit','tipo','unidad'].includes(b);
+                    const inC = ['text','label','descripcion','descripción'].includes(c);
+                    const inD = ['texto','text','label','descripcion','descripción'].includes(d);
+                    return (inA && inB) || (inA && inC) || (inA && inD) || (inB && inC) || (inB && inD);
                   }
 
-                  // Abreviación K / M (para miles/millones)
+                  // K/M compaction
                   function formatCompact(num){
                     const n = Number(num);
                     if (!isFinite(n)) return String(num);
@@ -449,47 +574,42 @@
                     return n.toLocaleString();
                   }
 
-                  // Easing para la animación de conteo
                   const easeOutCubic = x => 1 - Math.pow(1 - x, 3);
 
-                  // Anima de 0 → target con abreviación y unidad
-                  function animateCount(el, target, type, duration=1200){
-                    const unit = clean(type).toLowerCase();
+                  function finalText(n, unit){
+                    const u = clean(unit).toLowerCase();
+                    if (typeof n === 'number' && isFinite(n)){
+                      if (u === '%') return `${formatCompact(n)}%`;
+                      if (u === '$') return `$${formatCompact(n)}`;
+                      return u ? `${formatCompact(n)} ${u}` : formatCompact(n);
+                    }
+                    return u ? `${n} ${u}` : String(n);
+                  }
 
-                    // Si no es número, no animamos: solo texto final
+                  function animateCount(el, target, unit, duration=1200){
+                    const u = clean(unit).toLowerCase();
                     if (typeof target !== 'number' || !isFinite(target)){
-                      el.textContent = finalText(target, unit);
+                      el.textContent = finalText(target, u);
                       return;
                     }
-
                     const start = performance.now();
                     function frame(now){
                       const p = Math.min(1, (now - start) / duration);
                       const val = target * easeOutCubic(p);
-                      el.textContent = finalText(val, unit);
+                      el.textContent = finalText(val, u);
                       if (p < 1) requestAnimationFrame(frame);
                     }
                     requestAnimationFrame(frame);
                   }
 
-                  function finalText(n, unit){
-                    if (typeof n === 'number' && isFinite(n)){
-                      if (unit === '%') return formatCompact(n) + '%';
-                      if (unit === '$') return '$' + formatCompact(n);
-                      return unit ? `${formatCompact(n)} ${unit}` : formatCompact(n);
-                    }
-                    return unit ? `${n} ${unit}` : String(n);
-                  }
-
-                  // Observa visibilidad para disparar animación una sola vez
                   function mountObserver(){
                     const io = new IntersectionObserver((entries, obs)=>{
                       entries.forEach(entry=>{
                         if (entry.isIntersecting){
                           const el = entry.target;
                           const target = parseFloat(el.dataset.target);
-                          const type   = el.dataset.type || '';
-                          animateCount(el, target, type);
+                          const unit = el.dataset.unit || '';
+                          animateCount(el, target, unit);
                           obs.unobserve(el);
                         }
                       });
@@ -497,13 +617,76 @@
                     document.querySelectorAll('.stats-grid .value[data-target]').forEach(el => io.observe(el));
                   }
 
-                  async function loadStatsFetch(){
+                  // ---------- Cache + render por idioma ----------
+                  let cachedRows = [];
+
+                  function mapRowToRecord(cells, lang){
+                    // A: Statistic (num o string)
+                    // B: Unit
+                    // C: Text (EN)
+                    // D: Texto (ES)
+                    const c = cells || [];
+                    const rawStat = cellVal(c[0]);
+                    const unit    = cellStr(c[1]);
+                    const label   = (lang === 'EN') ? cellStr(c[2]) : cellStr(c[3]);
+
+                    // Parseo a número si posible
+                    let n = rawStat;
+                    if (typeof n !== 'number'){
+                      const parsed = parseFloat(clean(String(n)).replace(/,/g,''));
+                      if (!isNaN(parsed)) n = parsed;
+                    }
+                    return { valueRaw: rawStat, valueNum: n, unit, label };
+                  }
+
+                  function renderStatsForLang(lang){
+                    const grid = document.querySelector('#stats .stats-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    const rows = cachedRows.slice(); // sin reverse: son KPIs, el orden del sheet manda
+                    const frag = document.createDocumentFragment();
+
+                    rows.forEach(r=>{
+                      const rec = mapRowToRecord(r?.c || [], lang);
+
+                      const div  = document.createElement('div');
+                      div.className = 'cell';
+                      const pVal = document.createElement('p');
+                      pVal.className = 'value';
+                      const pLbl = document.createElement('p');
+                      pLbl.className = 'label';
+                      pLbl.textContent = rec.label || '';
+
+                      // Si no es numérico, mostramos texto final sin animación
+                      if (typeof rec.valueNum !== 'number' || !isFinite(rec.valueNum)){
+                        pVal.textContent = finalText(rec.valueRaw, rec.unit);
+                      } else {
+                        const u = clean(rec.unit).toLowerCase();
+                        pVal.dataset.target = String(rec.valueNum);
+                        pVal.dataset.unit = u;
+                        // Estado inicial 0 con unidad
+                        if (u === '%')      pVal.textContent = `${formatCompact(0)}%`;
+                        else if (u === '$') pVal.textContent = `$${formatCompact(0)}`;
+                        else                pVal.textContent = u ? `${formatCompact(0)} ${u}` : formatCompact(0);
+                      }
+
+                      div.appendChild(pVal);
+                      div.appendChild(pLbl);
+                      frag.appendChild(div);
+                    });
+
+                    grid.appendChild(frag);
+                    mountObserver();
+                  }
+
+                  async function fetchOnceAndRender(){
                     const grid = document.querySelector('#stats .stats-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
 
                     try{
-                      const res = await fetch(jsonUrl,{cache:'no-store'});
+                      const res = await fetch(jsonUrl, { cache:'no-store' });
                       const txt = await res.text();
                       const a = txt.indexOf('setResponse('), b = txt.lastIndexOf(');');
                       if (a === -1 || b === -1){
@@ -511,159 +694,43 @@
                         return;
                       }
                       const data = JSON.parse(txt.substring(a + 'setResponse('.length, b));
-
                       let rows = data?.table?.rows || [];
                       if (!rows.length){
                         grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
                         return;
                       }
                       if (isHeaderRow(rows[0])) rows = rows.slice(1);
+                      cachedRows = rows;
 
-                      const frag = document.createDocumentFragment();
-                      rows.forEach(r=>{
-                        const c    = r?.c || [];
-                        const raw  = cellVal(c[0]);   // A: número esperado
-                        const type = cellStr(c[1]);   // B: unidad/tipo (%,$,pz,...)
-                        const text = cellStr(c[2]);   // C: label
-
-                        // Parseo de número seguro
-                        let n = raw;
-                        if (typeof n !== 'number'){
-                          const parsed = parseFloat(clean(String(n)).replace(/,/g,''));
-                          if (!isNaN(parsed)) n = parsed;
-                        }
-
-                        const div   = document.createElement('div');
-                        div.className = 'cell';
-
-                        const pVal  = document.createElement('p');
-                        pVal.className = 'value';
-
-                        const pLbl  = document.createElement('p');
-                        pLbl.className = 'label';
-                        pLbl.textContent = text || '';
-
-                        // Si no es numérico, sin animación
-                        if (typeof n !== 'number' || !isFinite(n)){
-                          pVal.textContent = finalText(raw, clean(type).toLowerCase());
-                        } else {
-                          // Valor inicial 0 con unidad abreviada y data-* para animar
-                          const unit = clean(type).toLowerCase();
-                          pVal.dataset.target = String(n);
-                          pVal.dataset.type = unit;
-                          pVal.textContent =
-                            unit === '%' ? formatCompact(0) + '%' :
-                            unit === '$' ? '$' + formatCompact(0) :
-                            unit ? formatCompact(0) + ' ' + unit :
-                            formatCompact(0);
-                        }
-
-                        div.appendChild(pVal);
-                        div.appendChild(pLbl);
-                        frag.appendChild(div);
-                      });
-
-                      grid.appendChild(frag);
-                      mountObserver();
-                    }catch(e){
+                      renderStatsForLang(getCurrentLang());
+                    } catch(e){
                       console.error(e);
-                      const grid = document.querySelector('#stats .stats-grid');
-                      if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
+                      grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
 
-                  // ---- Fallback JSONP (por si CORS en IONOS rompe fetch) ----
-                  /*
-                  function loadGVizJSONP(url, onData, onError){
-                    window.google = window.google || {};
-                    window.google.visualization = window.google.visualization || {};
-                    window.google.visualization.Query = {
-                      setResponse: function(payload){
-                        try { onData(payload); }
-                        catch(e){ console.error(e); onError && onError(e); }
-                        finally { if (s && s.parentNode) s.parentNode.removeChild(s); }
-                      }
-                    };
-                    const s = document.createElement('script');
-                    s.src = url; s.async = true;
-                    s.onerror = () => { onError && onError(new Error('GViz script error')); if (s && s.parentNode) s.parentNode.removeChild(s); };
-                    document.head.appendChild(s);
-                  }
+                  // Carga inicial
+                  window.addEventListener('load', fetchOnceAndRender);
 
-                  function loadStatsJSONP(){
-                    const grid = document.querySelector('#stats .stats-grid');
-                    if (!grid) return;
-                    grid.innerHTML = '';
+                  // Redibuja al cambiar idioma
+                  window.addEventListener('languagechange', () => {
+                    renderStatsForLang(getCurrentLang());
+                  });
 
-                    loadGVizJSONP(jsonUrl, (data)=>{
-                      let rows = data?.table?.rows || [];
-                      if (!rows.length){
-                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
-                        return;
-                      }
-                      if (isHeaderRow(rows[0])) rows = rows.slice(1);
-
-                      const frag = document.createDocumentFragment();
-                      rows.forEach(r=>{
-                        const c    = r?.c || [];
-                        const raw  = cellVal(c[0]);
-                        const type = cellStr(c[1]);
-                        const text = cellStr(c[2]);
-
-                        let n = raw;
-                        if (typeof n !== 'number'){
-                          const parsed = parseFloat(clean(String(n)).replace(/,/g,''));
-                          if (!isNaN(parsed)) n = parsed;
-                        }
-
-                        const div   = document.createElement('div');
-                        div.className = 'cell';
-
-                        const pVal  = document.createElement('p');
-                        pVal.className = 'value';
-
-                        const pLbl  = document.createElement('p');
-                        pLbl.className = 'label';
-                        pLbl.textContent = text || '';
-
-                        if (typeof n !== 'number' || !isFinite(n)){
-                          pVal.textContent = finalText(raw, clean(type).toLowerCase());
-                        } else {
-                          const unit = clean(type).toLowerCase();
-                          pVal.dataset.target = String(n);
-                          pVal.dataset.type = unit;
-                          pVal.textContent =
-                            unit === '%' ? formatCompact(0) + '%' :
-                            unit === '$' ? '$' + formatCompact(0) :
-                            unit ? formatCompact(0) + ' ' + unit :
-                            formatCompact(0);
-                        }
-
-                        div.appendChild(pVal);
-                        div.appendChild(pLbl);
-                        frag.appendChild(div);
-                      });
-
-                      grid.appendChild(frag);
-                      mountObserver();
-                    }, ()=>{
-                      grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (JSONP).</div>`;
-                    });
-                  }
-                  */
-
-                  // Usa fetch por defecto:
-                  window.addEventListener('load', loadStatsFetch);
-                  // Si prefieres JSONP, comenta la línea de arriba y descomenta:
-                  // window.addEventListener('load', loadStatsJSONP);
+                  // Por si cambian localStorage desde otra pestaña/iframe
+                  window.addEventListener('storage', (ev) => {
+                    if (ev.key === 'site:lang') {
+                      renderStatsForLang(getCurrentLang());
+                    }
+                  });
                 })();
               </script>
             </div>
           </div>
         </div>
         <div class="home-faq">
-          <div class="home-container19">
-            <div class="home-container20">
+          <div class="home-container21">
+            <div class="home-container22">
               <section
                 id="faq"
                 style="
@@ -681,7 +748,7 @@
                   class="faq-title"
                   style="
     margin:0 0 clamp(28px,6vw,60px) 0;
-    font-size:calc(clamp(18px,2.6vw,26px) * 2); /* el doble que .q */
+    font-size:calc(clamp(18px,2.6vw,26px) * 2);
     font-weight:800;
     line-height:1.2;
     text-align:center;
@@ -708,7 +775,6 @@
                 }
                 .faq-grid .faq-item:nth-child(2n+1){ border-left:none; }
 
-                /* Títulos de cada pregunta */
                 .faq-grid .q{
                   margin:0 0 10px 0;
                   font-weight:800;
@@ -721,7 +787,7 @@
                   color:rgba(255,255,255,.85);
                   font-size:clamp(14px,2.1vw,16px);
                   line-height:1.6;
-                  white-space:pre-wrap; /* respeta saltos en la hoja */
+                  white-space:pre-wrap;
                 }
 
                 @media (max-width:800px){
@@ -736,17 +802,77 @@
                   const SHEET_ID = '1RMoC5WOQzmL0jpGy1eLpcn7TkHTmlWUzkTVaHmBuUwM';
                   const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-                  const clean = s => (s ?? '').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
+                  // ---------- Utils ----------
+                  const clean    = s => (s ?? '').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
                   const cellText = c => clean(c?.f ?? c?.v ?? '');
+                  const getLang  = () => {
+                    const val = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                    return val === 'EN' ? 'EN' : 'ES';
+                  };
 
+                  // Encabezado: ahora hay 4 columnas -> Question | Answer | Pregunta | Respuesta
                   function isHeaderRow(row){
                     const a = cellText(row?.c?.[0]).toLowerCase();
                     const b = cellText(row?.c?.[1]).toLowerCase();
-                    return (a === 'question' || a === 'pregunta') &&
-                           (b === 'answer'   || b === 'respuesta');
+                    const c = cellText(row?.c?.[2]).toLowerCase();
+                    const d = cellText(row?.c?.[3]).toLowerCase();
+                    const okA = (a === 'question');
+                    const okB = (b === 'answer');
+                    const okC = (c === 'pregunta');
+                    const okD = (d === 'respuesta');
+                    return (okA && okB) || (okC && okD) || (okA && okD) || (okB && okC);
                   }
 
-                  async function loadFAQFetch(){
+                  // --------- Cache y mapeo por idioma ----------
+                  let cachedRows = [];
+
+                  function mapRowToQA(cells, lang){
+                    // EN => c[0]=Question, c[1]=Answer
+                    // ES => c[2]=Pregunta, c[3]=Respuesta
+                    const c = cells || [];
+                    if (lang === 'EN'){
+                      return { q: cellText(c[0]), a: cellText(c[1]) };
+                    } else {
+                      return { q: cellText(c[2]), a: cellText(c[3]) };
+                    }
+                  }
+
+                  function renderFAQForLang(lang){
+                    const grid = document.querySelector('#faq .faq-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    // (opcional) cambia el título H2 según idioma
+                    const h2 = document.querySelector('#faq .faq-title');
+                    if (h2){
+                      h2.textContent = (lang === 'EN') ? 'Frequently Asked Questions' : 'Preguntas Frecuentes';
+                    }
+
+                    const frag = document.createDocumentFragment();
+                    cachedRows.forEach(r=>{
+                      const qa = mapRowToQA(r?.c || [], lang);
+                      if (!qa.q && !qa.a) return;
+
+                      const item = document.createElement('article');
+                      item.className = 'faq-item';
+
+                      const h3 = document.createElement('h3');
+                      h3.className = 'q';
+                      h3.textContent = qa.q || '';
+
+                      const p = document.createElement('p');
+                      p.className = 'a';
+                      p.textContent = qa.a || '';
+
+                      item.appendChild(h3);
+                      item.appendChild(p);
+                      frag.appendChild(item);
+                    });
+
+                    grid.appendChild(frag);
+                  }
+
+                  async function fetchOnceAndRender(){
                     const grid = document.querySelector('#faq .faq-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
@@ -760,7 +886,6 @@
                         return;
                       }
                       const data = JSON.parse(txt.substring(i + 'setResponse('.length, j));
-
                       let rows = data?.table?.rows || [];
                       if (!rows.length){
                         grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
@@ -768,30 +893,8 @@
                       }
                       if (isHeaderRow(rows[0])) rows = rows.slice(1);
 
-                      const frag = document.createDocumentFragment();
-                      rows.forEach(r=>{
-                        const c = r?.c || [];
-                        const q = cellText(c[0]);
-                        const a = cellText(c[1]);
-                        if (!q && !a) return;
-
-                        const item = document.createElement('article');
-                        item.className = 'faq-item';
-
-                        const h3 = document.createElement('h3');
-                        h3.className = 'q';
-                        h3.textContent = q || '';
-
-                        const p = document.createElement('p');
-                        p.className = 'a';
-                        p.textContent = a || '';
-
-                        item.appendChild(h3);
-                        item.appendChild(p);
-                        frag.appendChild(item);
-                      });
-
-                      grid.appendChild(frag);
+                      cachedRows = rows;
+                      renderFAQForLang(getLang());
                     }catch(err){
                       console.error(err);
                       const grid = document.querySelector('#faq .faq-grid');
@@ -799,79 +902,27 @@
                     }
                   }
 
-                  // ---- Fallback JSONP (por si CORS en IONOS rompe fetch) ----
-                  // Descomenta para usar JSONP en lugar de fetch:
-                  /*
-                  function loadGVizJSONP(url, onData, onError){
-                    window.google = window.google || {};
-                    window.google.visualization = window.google.visualization || {};
-                    window.google.visualization.Query = {
-                      setResponse: function(payload){
-                        try { onData(payload); }
-                        catch(e){ console.error(e); onError && onError(e); }
-                        finally { if (s && s.parentNode) s.parentNode.removeChild(s); }
-                      }
-                    };
-                    const s = document.createElement('script');
-                    s.src = url; s.async = true;
-                    s.onerror = () => { onError && onError(new Error('GViz script error')); if (s && s.parentNode) s.parentNode.removeChild(s); };
-                    document.head.appendChild(s);
-                  }
+                  // Inicial
+                  window.addEventListener('load', fetchOnceAndRender);
 
-                  function loadFAQ_JSONP(){
-                    const grid = document.querySelector('#faq .faq-grid');
-                    if (!grid) return;
-                    grid.innerHTML = '';
+                  // Redibujar al cambiar idioma
+                  window.addEventListener('languagechange', () => {
+                    renderFAQForLang(getLang());
+                  });
 
-                    loadGVizJSONP(jsonUrl, (data)=>{
-                      let rows = data?.table?.rows || [];
-                      if (!rows.length){
-                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
-                        return;
-                      }
-                      if (isHeaderRow(rows[0])) rows = rows.slice(1);
-
-                      const frag = document.createDocumentFragment();
-                      rows.forEach(r=>{
-                        const c = r?.c || [];
-                        const q = cellText(c[0]);
-                        const a = cellText(c[1]);
-                        if (!q && !a) return;
-
-                        const item = document.createElement('article');
-                        item.className = 'faq-item';
-
-                        const h3 = document.createElement('h3');
-                        h3.className = 'q';
-                        h3.textContent = q || '';
-
-                        const p = document.createElement('p');
-                        p.className = 'a';
-                        p.textContent = a || '';
-
-                        item.appendChild(h3);
-                        item.appendChild(p);
-                        frag.appendChild(item);
-                      });
-
-                      grid.appendChild(frag);
-                    }, ()=>{
-                      grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (JSONP).</div>`;
-                    });
-                  }
-                  */
-
-                  // Usa fetch por defecto
-                  window.addEventListener('load', loadFAQFetch);
-                  // Si prefieres JSONP, comenta la línea de arriba y descomenta:
-                  // window.addEventListener('load', loadFAQ_JSONP);
+                  // Por si cambia localStorage desde otra pestaña/iframe
+                  window.addEventListener('storage', (ev) => {
+                    if (ev.key === 'site:lang') {
+                      renderFAQForLang(getLang());
+                    }
+                  });
                 })();
               </script>
             </div>
           </div>
         </div>
-        <div class="home-container21">
-          <div class="home-container22">
+        <div class="home-container23">
+          <div class="home-container24">
             <img
               alt="Engineering Solutions Logo"
               src="public/logo1-200h-1500h.png"

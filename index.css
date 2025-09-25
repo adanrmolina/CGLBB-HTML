@@ -20,7 +20,7 @@
 }
  
 .home-navbar {
-  width: 1401px;
+  width: 100%;
   height: 94px;
   display: flex;
   z-index: 1000;
@@ -150,6 +150,10 @@
   height: var(--dl-layout-size-xsmall);
 }
  
+.home-container14 {
+  display: contents;
+}
+ 
 .home-video {
   top: 0px;
   left: 0px;
@@ -201,7 +205,7 @@
   line-height: 36px;
 }
  
-.home-container13 {
+.home-container15 {
   flex: 0 0 auto;
   width: 100%;
   display: flex;
@@ -209,13 +213,13 @@
   justify-content: flex-start;
 }
  
-.home-container14 {
+.home-container16 {
   width: 100%;
   align-self: normal;
   font-style: normal;
 }
  
-.home-container15 {
+.home-container17 {
   display: contents;
 }
  
@@ -267,7 +271,7 @@
   text-underline-position: below;
 }
  
-.home-container16 {
+.home-container18 {
   flex: 0 0 auto;
   width: 100%;
   height: 100%;
@@ -276,12 +280,12 @@
   justify-content: center;
 }
  
-.home-container17 {
+.home-container19 {
   width: 100%;
   height: 100%;
 }
  
-.home-container18 {
+.home-container20 {
   display: contents;
 }
  
@@ -293,15 +297,15 @@
   justify-content: flex-start;
 }
  
-.home-container19 {
+.home-container21 {
   width: 100%;
 }
  
-.home-container20 {
+.home-container22 {
   display: contents;
 }
  
-.home-container21 {
+.home-container23 {
   flex: 0 0 auto;
   width: 100%;
   display: flex;
@@ -309,7 +313,7 @@
   justify-content: center;
 }
  
-.home-container22 {
+.home-container24 {
   width: 100vh;
   display: flex;
   align-items: center;
@@ -349,11 +353,11 @@
   .home-hero-content {
     padding-right: var(--dl-layout-space-oneandhalfunits);
   }
-  .home-container13 {
+  .home-container15 {
     width: 100%;
     align-self: flex-start;
   }
-  .home-container14 {
+  .home-container16 {
     align-self: flex-start;
   }
   .home-content {
@@ -364,7 +368,7 @@
   .home-heading2 {
     font-size: 50px;
   }
-  .home-container17 {
+  .home-container19 {
     width: 100vh;
   }
   .home-image1 {
@@ -379,10 +383,10 @@
   .home-heading1 {
     font-size: 60px;
   }
-  .home-container13 {
+  .home-container15 {
     width: 100%;
   }
-  .home-container14 {
+  .home-container16 {
     width: 100%;
     align-self: flex-start;
   }
@@ -399,7 +403,7 @@
   .home-heading2 {
     font-size: 36px;
   }
-  .home-container17 {
+  .home-container19 {
     width: 681px;
   }
 }
@@ -425,10 +429,10 @@
     font-size: 16px;
     line-height: 24px;
   }
-  .home-container13 {
+  .home-container15 {
     flex: 0 0 auto;
   }
-  .home-container14 {
+  .home-container16 {
     flex: 0 0 auto;
   }
   .home-heading2 {
@@ -437,7 +441,7 @@
     text-align: center;
     font-weight: 500;
   }
-  .home-container17 {
+  .home-container19 {
     width: 478px;
     padding-bottom: 0px;
   }
