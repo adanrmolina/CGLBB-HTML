@@ -902,13 +902,14 @@
                   white-space:pre-wrap;
                 }
 
+                /* Truncado en líneas + degradado */
                 .faq-grid .desc.truncated{
-                  --max-lines: 2;
-                  max-height: calc(var(--max-lines,2) * 1.6em);
+                  --max-lines: 4;
+                  max-height: calc(var(--max-lines,4) * 1.6em);
                   overflow:hidden;
                   position:relative;
                   display:-webkit-box;
-                  -webkit-line-clamp: var(--max-lines,2);
+                  -webkit-line-clamp: var(--max-lines,4);
                   -webkit-box-orient: vertical;
                   -webkit-mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
                           mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
@@ -1011,9 +1012,9 @@
 
               <script>
                 (() => {
-                  /* ========= Usa tu hoja por GID fijo ========= */
+                  /* ========= GID fijo y columnas A-D fijas ========= */
                   const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
-                  const SHEET_GID = '1421800987'; // tu gid
+                  const SHEET_GID = '1421800987';
                   const jsonUrl   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
 
                   /* ===== Config truncado ===== */
@@ -1029,7 +1030,7 @@
                     return val === 'EN' ? 'EN' : 'ES';
                   };
 
-                  // Helper universal para tu botón de idioma:
+                  // Helper opcional para tu botón de idioma
                   if (!window.setSiteLang){
                     window.setSiteLang = (lang) => {
                       const val = (lang || '').toString().toUpperCase();
@@ -1042,7 +1043,6 @@
                   /* ===== Estado ===== */
                   let cachedRows = [];
                   let openIndex  = null;
-                  let COLS_MAP   = { enT:0, enD:1, esT:2, esD:3 }; // fallback por posición
 
                   /* ===== Modal ===== */
                   const modalBackdrop = document.getElementById('faq-modal-backdrop');
@@ -1063,60 +1063,14 @@
                   modalBackdrop?.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
                   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalBackdrop?.classList.contains('open')) closeModal(); });
 
-                  /* ===== Detección robusta de columnas por etiqueta ===== */
-                  function detectColumns(cols){
-                    // normaliza etiqueta: sin acentos, minúsculas, sin paréntesis ' (en)' / ' (es)'
-                    const norm = s => (s ?? '')
-                      .toString()
-                      .replace(/\(.*?\)/g,'')
-                      .toLowerCase()
-                      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-                      .replace(/\s+/g,' ').trim();
-
-                    const labels = cols.map(c => norm(c?.label));
-
-                    // candidatos por campo
-                    const cand = {
-                      enT: ['title en','title','titulo en'],
-                      enD: ['text en','text','description en','descripcion en','texto en'],
-                      esT: ['titulo es','titulo','título es','título'], // se normaliza sin acentos
-                      esD: ['texto es','texto','descripcion es','descripcion','descripción es','descripción']
-                    };
-
-                    const findIdx = (arr) => {
-                      for (const k of arr){
-                        const i = labels.indexOf(k);
-                        if (i !== -1) return i;
-                      }
-                      return -1;
-                    };
-
-                    const enT = findIdx(cand.enT);
-                    const enD = findIdx(cand.enD);
-                    const esT = findIdx(cand.esT);
-                    const esD = findIdx(cand.esD);
-
-                    const map = {
-                      enT: enT !== -1 ? enT : 0,
-                      enD: enD !== -1 ? enD : 1,
-                      esT: esT !== -1 ? esT : 2,
-                      esD: esD !== -1 ? esD : 3
-                    };
-
-                    // Log útil en consola si algo no se encontró
-                    if (enT === -1 || enD === -1 || esT === -1 || esD === -1){
-                      console.warn('[FAQ] Usando fallback por posición A:D. Etiquetas detectadas:', cols.map(c=>c?.label));
-                    }
-                    return map;
-                  }
-
-                  /* ===== Mapeo por idioma ===== */
+                  /* ===== Mapeo por idioma con índices fijos A-D ===== */
+                  // A: EN Title (0), B: EN Text (1), C: ES Título (2), D: ES Texto (3)
                   function mapRowToEntry(cells, lang){
                     const c = cells || [];
                     if (lang === 'EN'){
-                      return { t: cellTxt(c[COLS_MAP.enT]), d: cellTxt(c[COLS_MAP.enD]) };
+                      return { t: cellTxt(c[0]), d: cellTxt(c[1]) };
                     } else {
-                      return { t: cellTxt(c[COLS_MAP.esT]), d: cellTxt(c[COLS_MAP.esD]) };
+                      return { t: cellTxt(c[2]), d: cellTxt(c[3]) };
                     }
                   }
 
@@ -1185,7 +1139,7 @@
                       openModal(uc.t || '', uc.d || '', openIndex);
                     }
 
-                    // Texto del botón cerrar
+                    // Botón cerrar del modal según idioma
                     if (modalCloseBtn){
                       modalCloseBtn.textContent = (lang==='EN') ? '✕ Close' : '✕ Cerrar';
                       modalCloseBtn.setAttribute('aria-label', (lang==='EN') ? 'Close' : 'Cerrar');
@@ -1206,7 +1160,6 @@
                         return;
                       }
                       const data = JSON.parse(txt.substring(i + 'setResponse('.length, j));
-                      const cols = data?.table?.cols || [];
                       let rows = data?.table?.rows || [];
 
                       if (!rows.length){
@@ -1214,10 +1167,7 @@
                         return;
                       }
 
-                      // Detecta columnas por etiqueta (antes de cortar encabezado)
-                      COLS_MAP = detectColumns(cols);
-
-                      // Quita encabezado visible
+                      // Omitir SIEMPRE el primer renglón (encabezados de tu hoja)
                       rows = rows.slice(1);
 
                       cachedRows = rows;
