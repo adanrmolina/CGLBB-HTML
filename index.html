@@ -62,12 +62,7 @@
       <div class="home-container10">
         <section class="home-hero">
           <header data-thq="thq-navbar" class="home-navbar">
-            <img
-              alt="image"
-              src="public/logo1-200h-1500h.png"
-              class="home-branding"
-            />
-            <div data-thq="thq-burger-menu" class="home-burger-menu"></div>
+            <img alt="image" src="public/logo1.svg" class="home-branding" />
             <div data-thq="thq-mobile-menu" class="home-mobile-menu">
               <div
                 data-thq="thq-mobile-menu-nav"
@@ -75,7 +70,11 @@
                 class="home-nav1"
               >
                 <div class="home-container11">
-                  <img alt="image" src="public/logo.svg" class="home-image" />
+                  <img
+                    alt="image"
+                    src="https://play.teleporthq.io/static/svg/placeholders/no-image.svg"
+                    class="home-image"
+                  />
                   <div data-thq="thq-close-menu" class="home-menu-close">
                     <svg viewBox="0 0 1024 1024" class="home-icon10">
                       <path
@@ -219,20 +218,130 @@
           ></video>
           <div class="home-hero-content">
             <div class="home-header-container">
-              <div class="home-header">
-                <h1 class="home-heading">
-                  Digitize your operation. Save, scale, and control in real time
-                </h1>
+              <div class="home-container15">
+                <div class="home-container16">
+                  <section
+                    id="single"
+                    style="
+  width:100%;
+  max-width:min(100%, 900px);
+  margin:0 auto;
+  padding:0 clamp(12px,3vw,32px);
+  box-sizing:border-box;
+  color:#fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+"
+                  ></section>
+
+                  <script>
+                    (() => {
+                      const SHEET_ID = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
+                      const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+                      const TARGET_ROW_INDEX = 1; // segunda fila
+
+                      const getCurrentLang = () => {
+                        const appLang = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                        return (appLang === 'EN') ? 'EN' : 'ES';
+                      };
+
+                      function mapRowToRecord(rowCells, lang) {
+                        const c = rowCells || [];
+                        return {
+                          title : (lang === 'EN' ? (c[0]?.v||'') : (c[2]?.v||'')).trim(),
+                          text  : (lang === 'EN' ? (c[1]?.v||'') : (c[3]?.v||'')).trim()
+                        };
+                      }
+
+                      function renderParagraphs(t){
+                        const c=document.createElement('div');
+                        c.style.cssText='display:block;margin:0;white-space:pre-wrap;';
+                        (t||'').split(/\n{2,}/).forEach((chunk,i)=>{
+                          const p=document.createElement('p');
+                          p.textContent=chunk.trim();
+                          // tamaño duplicado respecto al original (30px máx en vez de 18px)
+                          p.style.cssText=`margin:${i? '14px 0 0':'0'};line-height:1.6;font-size:clamp(30px,4vw,36px);color:#fff;`;
+                          c.appendChild(p);
+                        });
+                        return c;
+                      }
+
+                      let cachedRows = [];
+
+                      function renderSingle(lang){
+                        const host = document.getElementById('single');
+                        if (!host) return;
+                        host.innerHTML = '';
+
+                        const row = cachedRows?.[TARGET_ROW_INDEX];
+                        if (!row || !row.c) {
+                          host.innerHTML = `<p style='color:#f88'>No encontré la segunda línea (índice ${TARGET_ROW_INDEX}).</p>`;
+                          return;
+                        }
+
+                        const rec = mapRowToRecord(row.c, lang);
+                        if (!rec.title && !rec.text) {
+                          host.innerHTML = `<p style='color:#ffb;'>La segunda línea no tiene título ni texto.</p>`;
+                          return;
+                        }
+
+                        const card = document.createElement('article');
+                        // sin fondo, sin borde ni sombra
+                        card.style.cssText = `
+                          display:block;
+                          padding:clamp(14px,2vw,24px);
+                          color:#fff;
+                        `;
+
+                        if (rec.title) {
+                          const h=document.createElement('h3');
+                          h.textContent = rec.title;
+                          // tamaño duplicado respecto al original (52px máx en vez de 26px)
+                          h.style.cssText = 'margin:0 0 12px 0;font-weight:800;font-size:clamp(36px,4.8vw,52px);line-height:1.3;color:#fff;';
+                          card.appendChild(h);
+                        }
+                        if (rec.text) {
+                          card.appendChild(renderParagraphs(rec.text));
+                        }
+
+                        host.appendChild(card);
+                      }
+
+                      async function init(){
+                        const host = document.getElementById('single');
+                        if (!host) return;
+                        try{
+                          const res = await fetch(jsonUrl, { cache:'no-store' });
+                          const txt = await res.text();
+                          const start = txt.indexOf('setResponse('), end = txt.lastIndexOf(');');
+                          if (start === -1 || end === -1) {
+                            host.innerHTML = `<p style='color:#f88'>No pude leer el Sheet</p>`;
+                            return;
+                          }
+                          const data = JSON.parse(txt.substring(start + 'setResponse('.length, end));
+                          cachedRows = data?.table?.rows || [];
+                          renderSingle(getCurrentLang());
+                        }catch(err){
+                          console.error('Error cargando sheet:', err);
+                          host.innerHTML = `<p style='color:#f88'>Error al cargar datos</p>`;
+                        }
+                      }
+
+                      window.addEventListener('load', init);
+                      window.addEventListener('languagechange', () => renderSingle(getCurrentLang()));
+                      window.addEventListener('storage', ev => {
+                        if (ev.key === 'site:lang') renderSingle(getCurrentLang());
+                      });
+                    })();
+                  </script>
+                </div>
               </div>
-              <p class="home-caption">
-                Dashboards, RPA, digital twins, and virtual training
-              </p>
             </div>
           </div>
         </section>
-        <div class="home-container15">
-          <div class="home-container16">
-            <div class="home-container17">
+        <div class="home-container17">
+          <div class="home-container18">
+            <div class="home-container19">
               <section
                 id="feed"
                 style="
@@ -252,13 +361,11 @@
                   const SHEET_ID = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-                  // Idioma actual
                   const getCurrentLang = () => {
                     const appLang = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
                     return (appLang === 'EN') ? 'EN' : 'ES';
                   };
 
-                  // Detectores / coincidencias
                   const isVideoFile = u => /\.(mp4|webm|ogg)(\?|#|$)/i.test(u||'');
                   const vimeoMatch  = u => (u||'').match(/vimeo\.com\/(\d+)/);
                   const tiktokMatch = u => (u||'').match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
@@ -266,7 +373,6 @@
                   const isYouTube   = u => /(?:youtu\.be\/|youtube\.com\/watch\?v=)/i.test(u||'');
                   const isInstagram = u => /instagram\.com\/(?:p|reel)\//i.test(u||'');
 
-                  // Iframes bonitos
                   function createBoxedIframe(src,{ratio='16/9',rounded='12px'}={}) {
                     const b=document.createElement('div');
                     b.style.cssText=`position:relative;width:100%;margin:0 auto clamp(10px,1.5vw,16px);aspect-ratio:${ratio};border-radius:${rounded};overflow:hidden;background:#000;max-height:85vh;`;
@@ -277,12 +383,9 @@
                     return b;
                   }
 
-                  // Render media (embeds)
                   function renderMedia({url,poster}) {
                     const s=(url||'').trim();
                     if(!s) return null;
-
-                    // video <video>
                     if(isVideoFile(s)){
                       const v=document.createElement('video');
                       v.src=s; v.controls=true; v.playsInline=true;
@@ -290,20 +393,12 @@
                       v.style.cssText='display:block;width:100%;height:auto;border-radius:12px;margin:0 0 clamp(10px,1.5vw,16px) 0;';
                       return v;
                     }
-
-                    // Vimeo
                     const vm=vimeoMatch(s);
                     if(vm) return createBoxedIframe(`https://player.vimeo.com/video/${vm[1]}`);
-
-                    // TikTok (vertical)
                     const tk=tiktokMatch(s);
                     if(tk) return createBoxedIframe(`https://www.tiktok.com/embed/${tk[1]}`,{ratio:'9/16'});
-
-                    // Drive
                     const gd=driveMatch(s);
                     if(gd) return createBoxedIframe(`https://drive.google.com/file/d/${gd[1]}/preview`);
-
-                    // Imagen
                     const img=document.createElement('img');
                     img.src=s; img.alt='';
                     img.loading='lazy';
@@ -311,7 +406,6 @@
                     return img;
                   }
 
-                  // Párrafos (descripción)
                   function renderParagraphs(t){
                     const c=document.createElement('div');
                     c.style.cssText='display:block;margin:0;white-space:pre-wrap;';
@@ -324,7 +418,6 @@
                     return c;
                   }
 
-                  // Botón gris oscuro con animación 'cool'
                   function makeCoolButton({ url, label }) {
                     const a = document.createElement('a');
                     a.href = url; a.target = '_blank'; a.rel = 'noopener';
@@ -357,7 +450,6 @@
                     return a;
                   }
 
-                  // Mapea fila -> registro
                   let cachedRows = [];
                   function mapRowToRecord(rowCells, lang) {
                     const c = rowCells || [];
@@ -370,20 +462,19 @@
                     };
                   }
 
-                  // Render del feed
                   function renderFeedForLang(lang) {
                     const feed = document.getElementById('feed');
                     if (!feed) return;
                     feed.innerHTML = '';
 
-                    // sin reverse y saltando encabezados
-                    const rows = cachedRows.slice(1);
+                    // 🔑 Salta las 3 primeras filas (encabezado + 2 adicionales)
+                    const rows = cachedRows.slice(2);
 
                     rows.forEach(r => {
                       const rec = mapRowToRecord(r.c || [], lang);
                       if (!rec.title && !rec.text) return;
 
-                      const url = rec.media || rec.href || '';  // la URL que tengamos
+                      const url = rec.media || rec.href || '';
                       const hasTikTok = tiktokMatch(url);
                       const hasVimeo  = vimeoMatch(url);
                       const isYT      = isYouTube(url);
@@ -405,7 +496,6 @@
                       card.onmouseenter=()=>{card.style.boxShadow='0 6px 18px rgba(0,0,0,.4)'; card.style.transform='translateY(-2px)';};
                       card.onmouseleave=()=>{card.style.boxShadow='0 2px 10px rgba(0,0,0,.3)'; card.style.transform='none';};
 
-                      // Título
                       if (rec.title) {
                         const h=document.createElement('h3');
                         h.textContent=rec.title;
@@ -413,7 +503,6 @@
                         card.appendChild(h);
                       }
 
-                      // Caso 1: TikTok / Vimeo -> media + descripción (sin botón)
                       if (hasTikTok || hasVimeo) {
                         const mediaEl = renderMedia({url: rec.media || rec.href, poster: rec.poster});
                         if (mediaEl) card.appendChild(mediaEl);
@@ -422,27 +511,20 @@
                         return;
                       }
 
-                      // Caso 2: YouTube / Instagram -> descripción + botón (sin meter descripción en el botón)
                       if (isYT || isIG) {
-                        // descripción después del título
                         if (rec.text) card.appendChild(renderParagraphs(rec.text));
-
-                        // botón a la plataforma
                         const label = isYT
                           ? (getCurrentLang()==='EN' ? 'Watch on YouTube' : 'Ver en YouTube')
                           : (getCurrentLang()==='EN' ? 'View on Instagram' : 'Ver en Instagram');
-
                         const wrapper = document.createElement('div');
                         wrapper.style.textAlign = 'center';
                         const btn = makeCoolButton({ url, label });
                         wrapper.appendChild(btn);
                         card.appendChild(wrapper);
-
                         feed.appendChild(card);
                         return;
                       }
 
-                      // Caso 3: Otros media (video file, drive, imagen) -> media + (si hay) descripción
                       if (rec.media) {
                         const mediaEl = renderMedia({url:rec.media, poster:rec.poster});
                         if (mediaEl) card.appendChild(mediaEl);
@@ -451,7 +533,6 @@
                         return;
                       }
 
-                      // Caso 4: Fila 'link' sin media/YT/IG -> título + botón (texto del botón = descripción)
                       if (rec.href) {
                         const wrapper = document.createElement('div');
                         wrapper.style.textAlign = 'center';
@@ -462,7 +543,6 @@
                         return;
                       }
 
-                      // Caso 5: Solo texto
                       if (rec.text) {
                         card.appendChild(renderParagraphs(rec.text));
                       }
@@ -471,7 +551,6 @@
                     });
                   }
 
-                  // Carga y render inicial
                   async function fetchOnceAndRenderInitial(){
                     const feed=document.getElementById('feed');
                     if (!feed) return;
@@ -492,7 +571,6 @@
                     }
                   }
 
-                  // Eventos
                   window.addEventListener('load', fetchOnceAndRenderInitial);
                   window.addEventListener('languagechange', () => renderFeedForLang(getCurrentLang()));
                   window.addEventListener('storage', ev => {
@@ -504,8 +582,8 @@
           </div>
         </div>
         <div class="home-stats">
-          <div class="home-container18">
-            <div class="home-container19">
+          <div class="home-container20">
+            <div class="home-container21">
               <section
                 id="stats"
                 style="
@@ -747,8 +825,8 @@
           </div>
         </div>
         <div class="home-faq">
-          <div class="home-container20">
-            <div class="home-container21">
+          <div class="home-container22">
+            <div class="home-container23">
               <section
                 id="faq"
                 style="
@@ -927,11 +1005,11 @@
             </div>
           </div>
         </div>
-        <div class="home-container22">
-          <div class="home-container23">
+        <div class="home-social-media">
+          <div class="home-container24">
             <img
               alt="Engineering Solutions Logo"
-              src="public/logo1-200h-1500h.png"
+              src="public/logo1.svg"
               class="home-image1"
             />
             <div class="home-social-links">
