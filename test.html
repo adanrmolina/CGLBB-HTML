@@ -238,7 +238,7 @@
 
                 <div class="uc-grid"></div>
 
-                <!-- Modal (scoped a este módulo) -->
+                <!-- Modal -->
                 <div
                   id="uc-modal-backdrop"
                   class="uc-modal-backdrop"
@@ -256,12 +256,12 @@
                     </button>
                     <h3 id="uc-modal-title"></h3>
                     <p id="uc-modal-body"></p>
+                    <div id="uc-modal-media" style="margin-top:16px;"></div>
                   </div>
                 </div>
               </section>
 
               <style>
-                /* ====== Grid & Cards (namespaced) ====== */
                 .uc-grid{
                   display:grid;
                   grid-template-columns:repeat(2,1fr);
@@ -277,12 +277,13 @@
                 .uc-item:nth-child(2n+1){ border-left:none; }
 
                 .uc-title{
-                  margin:0 0 10px 0;
+                  margin:0 0 8px 0;
                   font-weight:800;
                   line-height:1.25;
                   font-size:clamp(18px,2.6vw,26px);
                   color:#fff;
                 }
+
                 .uc-desc{
                   margin:0;
                   color:rgba(255,255,255,.85);
@@ -290,13 +291,10 @@
                   line-height:1.6;
                   white-space:pre-wrap;
                 }
-
-                /* Truncado en líneas + degradado */
                 .uc-desc.truncated{
-                  --uc-max-lines: 4; /* cambia a 2 si quieres forzar botón más seguido */
+                  --uc-max-lines: 4;
                   max-height: calc(var(--uc-max-lines,4) * 1.6em);
                   overflow:hidden;
-                  position:relative;
                   display:-webkit-box;
                   -webkit-line-clamp: var(--uc-max-lines,4);
                   -webkit-box-orient: vertical;
@@ -320,7 +318,36 @@
                   backdrop-filter: blur(4px);
                   transition:transform .15s ease, background .2s ease;
                 }
+                .uc-item.uc-has-button{ padding-bottom:calc(clamp(18px,2.6vw,28px) + 38px); }
                 .uc-read-more:hover{ transform:translateY(-1px); background:rgba(255,255,255,0.18); }
+
+                /* Media (solo se usa dentro del modal, pero dejo estilos namespaced) */
+                .uc-media{
+                  margin:0 0 clamp(10px,1.5vw,16px) 0;
+                  border-radius:12px;
+                  overflow:hidden;
+                }
+                .uc-media > img,
+                .uc-media > video{ display:block; width:100%; height:auto; border-radius:12px; object-fit:cover; }
+
+                .uc-iframe-box{
+                  position:relative; width:100%; aspect-ratio:16/9; background:#000;
+                  border-radius:12px; overflow:hidden; max-height:85vh;
+                }
+                .uc-iframe-box[data-ratio='9/16']{ aspect-ratio:9/16; }
+                .uc-iframe-box > iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+
+                .uc-linkwrap{ text-align:center; }
+                .uc-linkbtn{
+                  display:inline-block; margin-top:10px; padding:12px 20px; border-radius:10px;
+                  background:#2b2b2b; text-decoration:none; font-weight:700;
+                  font-size:clamp(14px,1.8vw,16px); color:#fff; box-shadow:0 2px 6px rgba(0,0,0,.3);
+                  transition:all .25s ease; transform-origin:center;
+                }
+                .uc-linkbtn:hover{
+                  background:#3a3a3a; box-shadow:0 0 15px rgba(180,180,180,.6), 0 0 30px rgba(180,180,180,.4);
+                  transform:scale(1.07) rotate(-1deg);
+                }
 
                 @media (max-width:800px){
                   .uc-grid{ grid-template-columns:1fr; }
@@ -328,57 +355,23 @@
                   .uc-item:first-child{ border-top:1px solid rgba(255,255,255,0.15); }
                 }
 
-                /* ===== Modal (namespaced) ===== */
+                /* Modal */
                 .uc-modal-backdrop{
-                  position:fixed;
-                  inset:0;
-                  background:rgba(0,0,0,.55);
-                  display:none;
-                  align-items:center;
-                  justify-content:center;
-                  z-index:9999;
+                  position:fixed; inset:0; background:rgba(0,0,0,.55);
+                  display:none; align-items:center; justify-content:center; z-index:9999;
                 }
                 .uc-modal-backdrop.open{ display:flex; }
-
                 .uc-modal{
-                  width:min(900px, 92vw);
-                  max-height:85vh;
-                  background:#0f1115;
-                  color:#fff;
-                  border:1px solid rgba(255,255,255,0.18);
-                  border-radius:16px;
-                  box-shadow:0 20px 60px rgba(0,0,0,.45);
-                  padding:clamp(16px,2.5vw,24px);
-                  overflow:auto;
+                  width:min(900px, 92vw); max-height:85vh; background:#0f1115; color:#fff;
+                  border:1px solid rgba(255,255,255,0.18); border-radius:16px;
+                  box-shadow:0 20px 60px rgba(0,0,0,.45); padding:clamp(16px,2.5vw,24px); overflow:auto;
                 }
-                .uc-modal h3{
-                  margin:0 0 12px 0;
-                  font-size:clamp(18px,2.2vw,24px);
-                  font-weight:800;
-                  line-height:1.25;
-                }
-                .uc-modal p{
-                  margin:0;
-                  font-size:clamp(14px,2.1vw,16px);
-                  line-height:1.7;
-                  white-space:pre-wrap;
-                  color:rgba(255,255,255,.92);
-                }
+                .uc-modal h3{ margin:0 0 12px 0; font-size:clamp(18px,2.2vw,24px); font-weight:800; line-height:1.25; }
+                .uc-modal p{ margin:0; font-size:clamp(14px,2.1vw,16px); line-height:1.7; white-space:pre-wrap; color:rgba(255,255,255,.92); }
                 .uc-modal-close{
-                  position:sticky;
-                  top:0;
-                  margin-left:auto;
-                  display:inline-flex;
-                  align-items:center;
-                  gap:8px;
-                  padding:6px 10px;
-                  border-radius:10px;
-                  background:rgba(255,255,255,0.08);
-                  color:#fff;
-                  font-size:12px;
-                  border:1px solid rgba(255,255,255,0.18);
-                  cursor:pointer;
-                  float:right;
+                  position:sticky; top:0; margin-left:auto; display:inline-flex; align-items:center; gap:8px;
+                  padding:6px 10px; border-radius:10px; background:rgba(255,255,255,0.08); color:#fff;
+                  font-size:12px; border:1px solid rgba(255,255,255,0.18); cursor:pointer; float:right;
                 }
               </style>
 
@@ -387,54 +380,123 @@
                   const ROOT = document.getElementById('usecases');
                   if (!ROOT) return;
 
-                  /* ========= GID y columnas A–D fijas ========= */
+                  /* === Sheet fijo (A..G) === */
                   const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const SHEET_GID = '1421800987';
                   const jsonUrl   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
 
-                  /* ===== Config truncado ===== */
+                  /* === Truncado === */
                   const MAX_LINES = 4;
                   const LENGTH_THRESHOLD = 180;
                   const LINE_HEIGHT = 1.6;
 
-                  /* ===== Utils (scoped) ===== */
+                  /* === Helpers (scoped) === */
                   const clean   = s => (s ?? '').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
                   const cellTxt = c => clean(c?.f ?? c?.v ?? '');
                   const getLang = () => {
-                    const val = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
-                    return val === 'EN' ? 'EN' : 'ES';
+                    const v = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                    return v === 'EN' ? 'EN' : 'ES';
                   };
 
-                  /* ===== Estado ===== */
+                  // Detectores de medios (para el MODAL)
+                  const ucIsVideoFile = u => /\.(mp4|webm|ogg)(\?|#|$)/i.test(u||'');
+                  const ucVimeoMatch  = u => (u||'').match(/vimeo\.com\/(\d+)/);
+                  const ucTikTokMatch = u => (u||'').match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+                  const ucDriveMatch  = u => (u||'').match(/drive\.google\.com\/file\/d\/([^/]+)/);
+                  const ucIsYouTube   = u => /(?:youtu\.be\/|youtube\.com\/watch\?v=)/i.test(u||'');
+                  const ucIsInstagram = u => /instagram\.com\/(?:p|reel)\//i.test(u||'');
+
+                  function ucCreateIframeBox(src, {ratio='16/9'} = {}){
+                    const box = document.createElement('div');
+                    box.className = 'uc-media uc-iframe-box';
+                    box.dataset.ratio = ratio;
+                    const i = document.createElement('iframe');
+                    i.src = src; i.loading='lazy'; i.allowFullscreen = true;
+                    box.appendChild(i);
+                    return box;
+                  }
+
+                  function ucRenderMedia({url, poster, lang}){
+                    const s = (url||'').trim();
+                    if (!s) return null;
+
+                    if (ucIsVideoFile(s)){
+                      const v=document.createElement('video');
+                      v.src=s; v.controls=true; v.playsInline=true;
+                      if (poster) v.setAttribute('poster', poster);
+                      v.className='uc-media';
+                      return v;
+                    }
+                    const vm = ucVimeoMatch(s);
+                    if (vm) return ucCreateIframeBox(`https://player.vimeo.com/video/${vm[1]}`, {ratio:'16/9'});
+
+                    const tk = ucTikTokMatch(s);
+                    if (tk) return ucCreateIframeBox(`https://www.tiktok.com/embed/${tk[1]}`, {ratio:'9/16'});
+
+                    const gd = ucDriveMatch(s);
+                    if (gd) return ucCreateIframeBox(`https://drive.google.com/file/d/${gd[1]}/preview`, {ratio:'16/9'});
+
+                    // YouTube / Instagram → botón dentro del modal
+                    if (ucIsYouTube(s) || ucIsInstagram(s)){
+                      const wrap = document.createElement('div');
+                      wrap.className = 'uc-linkwrap';
+                      const a = document.createElement('a');
+                      a.href = s; a.target = '_blank'; a.rel = 'noopener';
+                      a.className = 'uc-linkbtn';
+                      a.textContent = ucIsYouTube(s)
+                        ? (lang==='EN' ? 'Watch on YouTube'   : 'Ver en YouTube')
+                        : (lang==='EN' ? 'View on Instagram' : 'Ver en Instagram');
+                      wrap.appendChild(a);
+                      return wrap;
+                    }
+
+                    // Default: imagen
+                    const img=document.createElement('img');
+                    img.src=s; img.alt=''; img.loading='lazy';
+                    const wrap=document.createElement('div');
+                    wrap.className='uc-media';
+                    wrap.appendChild(img);
+                    return wrap;
+                  }
+
+                  /* === Estado === */
                   let cachedRows = [];
                   let openIndex  = null;
 
-                  /* ===== Modal (scoped) ===== */
+                  /* === Modal === */
                   const modalBackdrop = ROOT.querySelector('#uc-modal-backdrop');
                   const modalTitleEl  = ROOT.querySelector('#uc-modal-title');
                   const modalBodyEl   = ROOT.querySelector('#uc-modal-body');
+                  const modalMediaEl  = ROOT.querySelector('#uc-modal-media');
                   const modalCloseBtn = ROOT.querySelector('.uc-modal-close');
 
-                  function openUCModal(title, body, rowIndex){
-                    if (!modalBackdrop) return;
+                  function openUCModal({ title, body, media, href, poster, lang }, rowIndex){
                     modalTitleEl.textContent = title || '';
                     modalBodyEl.textContent  = body  || '';
+                    modalMediaEl.innerHTML   = '';
+
+                    const url = (media || href || '').trim();
+                    if (url){
+                      const mediaEl = ucRenderMedia({ url, poster, lang });
+                      if (mediaEl) modalMediaEl.appendChild(mediaEl);
+                    }
+
                     modalBackdrop.classList.add('open');
                     openIndex = rowIndex ?? null;
                     (modalCloseBtn || modalBackdrop.querySelector('.uc-modal'))?.focus();
                   }
-                  function closeUCModal(){ modalBackdrop?.classList.remove('open'); openIndex = null; }
-                  modalCloseBtn?.addEventListener('click', closeUCModal);
-                  modalBackdrop?.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeUCModal(); });
-                  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalBackdrop?.classList.contains('open')) closeUCModal(); });
+                  function closeUCModal(){ modalBackdrop.classList.remove('open'); openIndex = null; }
+                  modalCloseBtn.addEventListener('click', closeUCModal);
+                  modalBackdrop.addEventListener('click', e => { if (e.target === modalBackdrop) closeUCModal(); });
+                  window.addEventListener('keydown', e => { if (e.key === 'Escape' && modalBackdrop.classList.contains('open')) closeUCModal(); });
 
-                  /* ===== Mapeo por idioma con índices fijos A–D ===== */
-                  // A: EN Title (0), B: EN Text (1), C: ES Título (2), D: ES Texto (3)
+                  /* === Mapeo A..G === */
+                  // A: EN Title(0), B: EN Text(1), C: ES Title(2), D: ES Text(3), E: Media(4), F: Href(5), G: Poster(6)
                   function mapRowToUC(cells, lang){
                     const c = cells || [];
                     return (lang === 'EN')
-                      ? { t: cellTxt(c[0]), d: cellTxt(c[1]) }
-                      : { t: cellTxt(c[2]), d: cellTxt(c[3]) };
+                      ? { t: cellTxt(c[0]), d: cellTxt(c[1]), m: cellTxt(c[4]), h: cellTxt(c[5]), p: cellTxt(c[6]) }
+                      : { t: cellTxt(c[2]), d: cellTxt(c[3]), m: cellTxt(c[4]), h: cellTxt(c[5]), p: cellTxt(c[6]) };
                   }
 
                   function renderUCForLang(lang){
@@ -449,40 +511,58 @@
 
                     cachedRows.forEach((r, idx)=>{
                       const uc = mapRowToUC(r?.c || [], lang);
-                      if (!uc.t && !uc.d) return;
+                      // Si no hay nada, salta
+                      if (!uc.t && !uc.d && !uc.m && !uc.h) return;
 
                       const item = document.createElement('article');
                       item.className = 'uc-item';
                       item.dataset.rowIndex = idx.toString();
 
-                      const h3 = document.createElement('h3');
-                      h3.className = 'uc-title';
-                      h3.textContent = uc.t || '';
+                      // Título
+                      if (uc.t){
+                        const h3 = document.createElement('h3');
+                        h3.className = 'uc-title';
+                        h3.textContent = uc.t;
+                        item.appendChild(h3);
+                      }
 
-                      const p = document.createElement('p');
-                      p.className = 'uc-desc';
-                      p.textContent = uc.d || '';
+                      // Descripción (en la tarjeta principal) — SIN media aquí
+                      if (uc.d){
+                        const p = document.createElement('p');
+                        p.className = 'uc-desc';
+                        p.textContent = uc.d;
+                        item.appendChild(p);
+                      }
 
-                      item.appendChild(h3);
-                      item.appendChild(p);
+                      // (No se añade media en la vista principal)
+
                       frag.appendChild(item);
                     });
 
                     grid.appendChild(frag);
 
-                    // Truncado + botón por item (scoped)
+                    // Truncado + botón (aparece si el texto es largo O si hay media/link)
                     grid.querySelectorAll('.uc-item').forEach(item=>{
+                      const idx = Number(item.dataset.rowIndex || -1);
+                      const rec = cachedRows[idx];
+                      const langNow = getLang();
+                      const uc = mapRowToUC(rec?.c || [], langNow);
+
                       const p = item.querySelector('.uc-desc');
-                      if (!p) return;
+                      const hasMedia = !!(uc.m || uc.h);
 
-                      const fs = parseFloat(getComputedStyle(p).fontSize) || 16;
-                      const maxPx = MAX_LINES * LINE_HEIGHT * fs;
-                      const needTrunc = (p.scrollHeight > maxPx * 1.02) || (p.textContent.length > LENGTH_THRESHOLD);
+                      let needButton = hasMedia; // botón si hay media/link aunque el texto sea corto
+                      if (p){
+                        const fs = parseFloat(getComputedStyle(p).fontSize) || 16;
+                        const maxPx = MAX_LINES * LINE_HEIGHT * fs;
+                        const overflow = p.scrollHeight > maxPx * 1.02;
+                        const longText = p.textContent.length > LENGTH_THRESHOLD;
+                        if (overflow || longText) needButton = true;
+                        if (overflow) p.classList.add('truncated');
+                      }
 
-                      if (needTrunc){
-                        p.classList.add('truncated');
-                        p.style.setProperty('--uc-max-lines', String(MAX_LINES));
-
+                      if (needButton){
+                        item.classList.add('uc-has-button');
                         let btn = item.querySelector('.uc-read-more');
                         if (!btn){
                           btn = document.createElement('button');
@@ -490,17 +570,17 @@
                           btn.className = 'uc-read-more';
                           item.appendChild(btn);
                         }
-                        btn.textContent = (lang==='EN') ? 'Read more' : 'Leer más';
+                        btn.textContent = (langNow==='EN') ? 'Read more' : 'Leer más';
                       }
                     });
 
-                    // Sincroniza modal si está abierto
+                    // Sincroniza modal si está abierto (re-render idioma)
                     if (openIndex !== null && openIndex >= 0 && openIndex < cachedRows.length){
                       const uc = mapRowToUC(cachedRows[openIndex]?.c || [], lang);
-                      openUCModal(uc.t || '', uc.d || '', openIndex);
+                      openUCModal({ title: uc.t || '', body: uc.d || '', media: uc.m, href: uc.h, poster: uc.p, lang }, openIndex);
                     }
 
-                    // Texto del botón cerrar del modal
+                    // Texto del botón cerrar
                     if (modalCloseBtn){
                       modalCloseBtn.textContent = (lang==='EN') ? '✕ Close' : '✕ Cerrar';
                       modalCloseBtn.setAttribute('aria-label', (lang==='EN') ? 'Close' : 'Cerrar');
@@ -534,11 +614,11 @@
                       renderUCForLang(getLang());
                     }catch(err){
                       console.error(err);
-                      if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
+                      grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
 
-                  // Delegación de clic SOLO dentro del módulo
+                  // Delegación: abrir modal
                   ROOT.addEventListener('click', (e)=>{
                     const btn = e.target.closest?.('.uc-read-more');
                     if (!btn || !ROOT.contains(btn)) return;
@@ -547,20 +627,15 @@
                     const idx = Number(item.dataset.rowIndex || -1);
                     if (idx < 0) return;
 
-                    const uc = mapRowToUC(cachedRows[idx]?.c || [], getLang());
-                    openUCModal(uc.t || '', uc.d || '', idx);
+                    const lang = getLang();
+                    const uc = mapRowToUC(cachedRows[idx]?.c || [], lang);
+                    openUCModal({ title: uc.t || '', body: uc.d || '', media: uc.m, href: uc.h, poster: uc.p, lang }, idx);
                   });
 
-                  // Inicial
+                  // Inicial + re-render por idioma
                   window.addEventListener('load', fetchUCAndRender);
-
-                  // Re-render por idioma
-                  window.addEventListener('languagechange', () => { renderUCForLang(getLang()); });
-
-                  // Cambios desde otras pestañas
-                  window.addEventListener('storage', (ev) => {
-                    if (ev.key === 'site:lang') renderUCForLang(getLang());
-                  });
+                  window.addEventListener('languagechange', () => renderUCForLang(getLang()));
+                  window.addEventListener('storage', ev => { if (ev.key === 'site:lang') renderUCForLang(getLang()); });
                 })();
               </script>
             </div>
