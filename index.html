@@ -845,7 +845,7 @@
           <div class="home-container22">
             <div class="home-container23">
               <section
-                id="faq"
+                id="usecases"
                 style="
   width:100%;
   max-width:1100px;
@@ -857,7 +857,7 @@
 "
               >
                 <h2
-                  class="faq-title"
+                  class="uc-heading"
                   style="
     margin:0 0 clamp(28px,6vw,60px) 0;
     font-size:calc(clamp(18px,2.6vw,26px) * 2);
@@ -870,32 +870,54 @@
                   Use Cases
                 </h2>
 
-                <div class="faq-grid"></div>
+                <div class="uc-grid"></div>
+
+                <!-- Modal (scoped a este módulo) -->
+                <div
+                  id="uc-modal-backdrop"
+                  class="uc-modal-backdrop"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="uc-modal-title"
+                >
+                  <div class="uc-modal" tabindex="-1">
+                    <button
+                      class="uc-modal-close"
+                      type="button"
+                      aria-label="Close"
+                    >
+                      ✕ Cerrar
+                    </button>
+                    <h3 id="uc-modal-title"></h3>
+                    <p id="uc-modal-body"></p>
+                  </div>
+                </div>
               </section>
 
               <style>
-                .faq-grid{
+                /* ====== Grid & Cards (namespaced) ====== */
+                .uc-grid{
                   display:grid;
                   grid-template-columns:repeat(2,1fr);
                   align-items:start;
                   gap:0;
                 }
-                .faq-grid .use-item{
+                .uc-item{
                   position:relative;
                   padding:clamp(18px,2.6vw,28px);
                   border-left:1px solid rgba(255,255,255,0.15);
                   border-bottom:1px solid rgba(255,255,255,0.15);
                 }
-                .faq-grid .use-item:nth-child(2n+1){ border-left:none; }
+                .uc-item:nth-child(2n+1){ border-left:none; }
 
-                .faq-grid .title{
+                .uc-title{
                   margin:0 0 10px 0;
                   font-weight:800;
                   line-height:1.25;
                   font-size:clamp(18px,2.6vw,26px);
                   color:#fff;
                 }
-                .faq-grid .desc{
+                .uc-desc{
                   margin:0;
                   color:rgba(255,255,255,.85);
                   font-size:clamp(14px,2.1vw,16px);
@@ -904,19 +926,19 @@
                 }
 
                 /* Truncado en líneas + degradado */
-                .faq-grid .desc.truncated{
-                  --max-lines: 4;
-                  max-height: calc(var(--max-lines,4) * 1.6em);
+                .uc-desc.truncated{
+                  --uc-max-lines: 4; /* cambia a 2 si quieres forzar botón más seguido */
+                  max-height: calc(var(--uc-max-lines,4) * 1.6em);
                   overflow:hidden;
                   position:relative;
                   display:-webkit-box;
-                  -webkit-line-clamp: var(--max-lines,4);
+                  -webkit-line-clamp: var(--uc-max-lines,4);
                   -webkit-box-orient: vertical;
                   -webkit-mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
                           mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
                 }
 
-                .read-more{
+                .uc-read-more{
                   position:absolute;
                   right:clamp(12px,2vw,16px);
                   bottom:clamp(12px,2vw,16px);
@@ -932,16 +954,16 @@
                   backdrop-filter: blur(4px);
                   transition:transform .15s ease, background .2s ease;
                 }
-                .read-more:hover{ transform:translateY(-1px); background:rgba(255,255,255,0.18); }
+                .uc-read-more:hover{ transform:translateY(-1px); background:rgba(255,255,255,0.18); }
 
                 @media (max-width:800px){
-                  .faq-grid{ grid-template-columns:1fr; }
-                  .faq-grid .use-item{ border-left:none; }
-                  .faq-grid .use-item:first-child{ border-top:1px solid rgba(255,255,255,0.15); }
+                  .uc-grid{ grid-template-columns:1fr; }
+                  .uc-item{ border-left:none; }
+                  .uc-item:first-child{ border-top:1px solid rgba(255,255,255,0.15); }
                 }
 
-                /* ===== Modal ===== */
-                .faq-modal-backdrop{
+                /* ===== Modal (namespaced) ===== */
+                .uc-modal-backdrop{
                   position:fixed;
                   inset:0;
                   background:rgba(0,0,0,.55);
@@ -950,9 +972,9 @@
                   justify-content:center;
                   z-index:9999;
                 }
-                .faq-modal-backdrop.open{ display:flex; }
+                .uc-modal-backdrop.open{ display:flex; }
 
-                .faq-modal{
+                .uc-modal{
                   width:min(900px, 92vw);
                   max-height:85vh;
                   background:#0f1115;
@@ -963,20 +985,20 @@
                   padding:clamp(16px,2.5vw,24px);
                   overflow:auto;
                 }
-                .faq-modal h3{
+                .uc-modal h3{
                   margin:0 0 12px 0;
                   font-size:clamp(18px,2.2vw,24px);
                   font-weight:800;
                   line-height:1.25;
                 }
-                .faq-modal p{
+                .uc-modal p{
                   margin:0;
                   font-size:clamp(14px,2.1vw,16px);
                   line-height:1.7;
                   white-space:pre-wrap;
                   color:rgba(255,255,255,.92);
                 }
-                .faq-modal .modal-close{
+                .uc-modal-close{
                   position:sticky;
                   top:0;
                   margin-left:auto;
@@ -994,26 +1016,12 @@
                 }
               </style>
 
-              <!-- Modal -->
-              <div
-                id="faq-modal-backdrop"
-                class="faq-modal-backdrop"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="faq-modal-title"
-              >
-                <div class="faq-modal" tabindex="-1">
-                  <button class="modal-close" type="button" aria-label="Close">
-                    ✕ Cerrar
-                  </button>
-                  <h3 id="faq-modal-title"></h3>
-                  <p id="faq-modal-body"></p>
-                </div>
-              </div>
-
               <script>
                 (() => {
-                  /* ========= GID fijo y columnas A-D fijas ========= */
+                  const ROOT = document.getElementById('usecases');
+                  if (!ROOT) return;
+
+                  /* ========= GID y columnas A–D fijas ========= */
                   const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const SHEET_GID = '1421800987';
                   const jsonUrl   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
@@ -1023,7 +1031,7 @@
                   const LENGTH_THRESHOLD = 180;
                   const LINE_HEIGHT = 1.6;
 
-                  /* ===== Utils ===== */
+                  /* ===== Utils (scoped) ===== */
                   const clean   = s => (s ?? '').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
                   const cellTxt = c => clean(c?.f ?? c?.v ?? '');
                   const getLang = () => {
@@ -1031,75 +1039,62 @@
                     return val === 'EN' ? 'EN' : 'ES';
                   };
 
-                  // Helper opcional para tu botón de idioma
-                  if (!window.setSiteLang){
-                    window.setSiteLang = (lang) => {
-                      const val = (lang || '').toString().toUpperCase();
-                      window.APP_LANG = val;
-                      try { localStorage.setItem('site:lang', val); } catch(e){}
-                      window.dispatchEvent(new Event('languagechange'));
-                    };
-                  }
-
                   /* ===== Estado ===== */
                   let cachedRows = [];
                   let openIndex  = null;
 
-                  /* ===== Modal ===== */
-                  const modalBackdrop = document.getElementById('faq-modal-backdrop');
-                  const modalTitleEl  = document.getElementById('faq-modal-title');
-                  const modalBodyEl   = document.getElementById('faq-modal-body');
-                  const modalCloseBtn = modalBackdrop?.querySelector('.modal-close');
+                  /* ===== Modal (scoped) ===== */
+                  const modalBackdrop = ROOT.querySelector('#uc-modal-backdrop');
+                  const modalTitleEl  = ROOT.querySelector('#uc-modal-title');
+                  const modalBodyEl   = ROOT.querySelector('#uc-modal-body');
+                  const modalCloseBtn = ROOT.querySelector('.uc-modal-close');
 
-                  function openModal(title, body, rowIndex){
+                  function openUCModal(title, body, rowIndex){
                     if (!modalBackdrop) return;
                     modalTitleEl.textContent = title || '';
                     modalBodyEl.textContent  = body  || '';
                     modalBackdrop.classList.add('open');
                     openIndex = rowIndex ?? null;
-                    (modalCloseBtn || modalBackdrop.querySelector('.faq-modal'))?.focus();
+                    (modalCloseBtn || modalBackdrop.querySelector('.uc-modal'))?.focus();
                   }
-                  function closeModal(){ modalBackdrop?.classList.remove('open'); openIndex = null; }
-                  modalCloseBtn?.addEventListener('click', closeModal);
-                  modalBackdrop?.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
-                  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalBackdrop?.classList.contains('open')) closeModal(); });
+                  function closeUCModal(){ modalBackdrop?.classList.remove('open'); openIndex = null; }
+                  modalCloseBtn?.addEventListener('click', closeUCModal);
+                  modalBackdrop?.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeUCModal(); });
+                  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalBackdrop?.classList.contains('open')) closeUCModal(); });
 
-                  /* ===== Mapeo por idioma con índices fijos A-D ===== */
+                  /* ===== Mapeo por idioma con índices fijos A–D ===== */
                   // A: EN Title (0), B: EN Text (1), C: ES Título (2), D: ES Texto (3)
-                  function mapRowToEntry(cells, lang){
+                  function mapRowToUC(cells, lang){
                     const c = cells || [];
-                    if (lang === 'EN'){
-                      return { t: cellTxt(c[0]), d: cellTxt(c[1]) };
-                    } else {
-                      return { t: cellTxt(c[2]), d: cellTxt(c[3]) };
-                    }
+                    return (lang === 'EN')
+                      ? { t: cellTxt(c[0]), d: cellTxt(c[1]) }
+                      : { t: cellTxt(c[2]), d: cellTxt(c[3]) };
                   }
 
-                  function renderForLang(lang){
-                    const grid = document.querySelector('#faq .faq-grid');
+                  function renderUCForLang(lang){
+                    const grid = ROOT.querySelector('.uc-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
 
-                    // Título
-                    const h2 = document.querySelector('#faq .faq-title');
+                    const h2 = ROOT.querySelector('.uc-heading');
                     if (h2){ h2.textContent = (lang === 'EN') ? 'Use Cases' : 'Casos de uso'; }
 
                     const frag = document.createDocumentFragment();
 
                     cachedRows.forEach((r, idx)=>{
-                      const uc = mapRowToEntry(r?.c || [], lang);
+                      const uc = mapRowToUC(r?.c || [], lang);
                       if (!uc.t && !uc.d) return;
 
                       const item = document.createElement('article');
-                      item.className = 'use-item';
+                      item.className = 'uc-item';
                       item.dataset.rowIndex = idx.toString();
 
                       const h3 = document.createElement('h3');
-                      h3.className = 'title';
+                      h3.className = 'uc-title';
                       h3.textContent = uc.t || '';
 
                       const p = document.createElement('p');
-                      p.className = 'desc';
+                      p.className = 'uc-desc';
                       p.textContent = uc.d || '';
 
                       item.appendChild(h3);
@@ -1109,46 +1104,45 @@
 
                     grid.appendChild(frag);
 
-                    // Truncado + botón
-                    const items = grid.querySelectorAll('.use-item');
-                    items.forEach(item=>{
-                      const p = item.querySelector('.desc');
+                    // Truncado + botón por item (scoped)
+                    grid.querySelectorAll('.uc-item').forEach(item=>{
+                      const p = item.querySelector('.uc-desc');
                       if (!p) return;
 
                       const fs = parseFloat(getComputedStyle(p).fontSize) || 16;
                       const maxPx = MAX_LINES * LINE_HEIGHT * fs;
-                      const needTruncate = (p.scrollHeight > maxPx * 1.02) || (p.textContent.length > LENGTH_THRESHOLD);
+                      const needTrunc = (p.scrollHeight > maxPx * 1.02) || (p.textContent.length > LENGTH_THRESHOLD);
 
-                      if (needTruncate){
+                      if (needTrunc){
                         p.classList.add('truncated');
-                        p.style.setProperty('--max-lines', String(MAX_LINES));
+                        p.style.setProperty('--uc-max-lines', String(MAX_LINES));
 
-                        let btn = item.querySelector('.read-more');
+                        let btn = item.querySelector('.uc-read-more');
                         if (!btn){
                           btn = document.createElement('button');
                           btn.type = 'button';
-                          btn.className = 'read-more';
+                          btn.className = 'uc-read-more';
                           item.appendChild(btn);
                         }
                         btn.textContent = (lang==='EN') ? 'Read more' : 'Leer más';
                       }
                     });
 
-                    // Sincroniza modal abierto
+                    // Sincroniza modal si está abierto
                     if (openIndex !== null && openIndex >= 0 && openIndex < cachedRows.length){
-                      const uc = mapRowToEntry(cachedRows[openIndex]?.c || [], lang);
-                      openModal(uc.t || '', uc.d || '', openIndex);
+                      const uc = mapRowToUC(cachedRows[openIndex]?.c || [], lang);
+                      openUCModal(uc.t || '', uc.d || '', openIndex);
                     }
 
-                    // Botón cerrar del modal según idioma
+                    // Texto del botón cerrar del modal
                     if (modalCloseBtn){
                       modalCloseBtn.textContent = (lang==='EN') ? '✕ Close' : '✕ Cerrar';
                       modalCloseBtn.setAttribute('aria-label', (lang==='EN') ? 'Close' : 'Cerrar');
                     }
                   }
 
-                  async function fetchOnceAndRender(){
-                    const grid = document.querySelector('#faq .faq-grid');
+                  async function fetchUCAndRender(){
+                    const grid = ROOT.querySelector('.uc-grid');
                     if (!grid) return;
                     grid.innerHTML = '';
 
@@ -1162,45 +1156,44 @@
                       }
                       const data = JSON.parse(txt.substring(i + 'setResponse('.length, j));
                       let rows = data?.table?.rows || [];
-
                       if (!rows.length){
                         grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
                         return;
                       }
 
-                      // Omitir SIEMPRE el primer renglón (encabezados de tu hoja)
+                      // Quita encabezado (primera fila)
                       rows = rows.slice(1);
 
                       cachedRows = rows;
-                      renderForLang(getLang());
+                      renderUCForLang(getLang());
                     }catch(err){
                       console.error(err);
                       if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
 
-                  // Abrir modal (delegación)
-                  document.addEventListener('click', (e)=>{
-                    const btn = e.target.closest?.('.read-more');
-                    if (!btn) return;
-                    const item = btn.closest('.use-item');
+                  // Delegación de clic SOLO dentro del módulo
+                  ROOT.addEventListener('click', (e)=>{
+                    const btn = e.target.closest?.('.uc-read-more');
+                    if (!btn || !ROOT.contains(btn)) return;
+                    const item = btn.closest('.uc-item');
                     if (!item) return;
                     const idx = Number(item.dataset.rowIndex || -1);
                     if (idx < 0) return;
 
-                    const uc = mapRowToEntry(cachedRows[idx]?.c || [], getLang());
-                    openModal(uc.t || '', uc.d || '', idx);
+                    const uc = mapRowToUC(cachedRows[idx]?.c || [], getLang());
+                    openUCModal(uc.t || '', uc.d || '', idx);
                   });
 
                   // Inicial
-                  window.addEventListener('load', fetchOnceAndRender);
+                  window.addEventListener('load', fetchUCAndRender);
 
                   // Re-render por idioma
-                  window.addEventListener('languagechange', () => { renderForLang(getLang()); });
+                  window.addEventListener('languagechange', () => { renderUCForLang(getLang()); });
 
                   // Cambios desde otras pestañas
                   window.addEventListener('storage', (ev) => {
-                    if (ev.key === 'site:lang') renderForLang(getLang());
+                    if (ev.key === 'site:lang') renderUCForLang(getLang());
                   });
                 })();
               </script>
