@@ -380,6 +380,10 @@
   .home-burger-menu {
     display: flex;
   }
+  .home-container13 {
+    right: 20px;
+    position: fixed;
+  }
   .home-heading1 {
     font-size: 60px;
   }

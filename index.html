@@ -116,9 +116,9 @@
                 </svg>
               </div>
             </div>
-            <div>
+            <div class="home-container13">
               <div class="home-container14">
-                <!-- 🔘 Toggle EN/ES — un solo embed code -->
+                <!-- 🔘 Toggle EN/ES con auto-detector por idioma del navegador -->
                 <div id="lang-toggle-teleport" style="display:inline-block">
                   <button
                     id="lang-toggle-btn"
@@ -140,65 +140,67 @@
                   </button>
 
                   <style>
-                    /* Hover/active mínimos (por si tu tema es claro/oscuro) */
-                    #lang-toggle-teleport #lang-toggle-btn:hover{
-                      filter: brightness(1.15);
-                    }
-                    #lang-toggle-teleport #lang-toggle-btn:active{
-                      transform: translateY(1px);
-                    }
+                    #lang-toggle-teleport #lang-toggle-btn:hover{ filter: brightness(1.15); }
+                    #lang-toggle-teleport #lang-toggle-btn:active{ transform: translateY(1px); }
 
-                    /* ❗Si prefieres que flote en la pantalla, descomenta:
-                    #lang-toggle-teleport{
-                      position: fixed; right: 16px; bottom: 16px; z-index: 9999;
-                    } */
+                    /* Para fijarlo en pantalla, descomenta:
+                    #lang-toggle-teleport{ position: fixed; right: 16px; bottom: 16px; z-index: 9999; } */
                   </style>
 
                   <script>
                     (function () {
-                      // Clave de almacenamiento y valores válidos
                       const STORAGE_KEY = 'site:lang';
                       const LANGS = ['EN', 'ES'];
-                      const DEFAULT_LANG = 'EN';
+                      const DEFAULT_LANG = 'EN'; // fallback final si todo falla
 
-                      // Elementos del embed (aseguramos alcance local)
                       const root = document.getElementById('lang-toggle-teleport');
                       if (!root) return;
                       const btn = root.querySelector('#lang-toggle-btn');
 
-                      // Estado: intenta cargar de localStorage; si no, usa default
-                      let current = (function(){
-                        try { return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG; }
-                        catch(e){ return DEFAULT_LANG; }
-                      })();
-
-                      // Expone variable global simple para que puedas leerla en otro script
-                      function expose(lang){
-                        window.APP_LANG = lang;                                  // <-- variable global
-                        document.documentElement.dataset.lang = lang;            // data-lang en <html>
-                        // document.documentElement.setAttribute('lang', lang.toLowerCase()); // <- opcional
+                      // ✅ Detección de español por idioma del navegador
+                      function browserPrefersSpanish(){
+                        try{
+                          const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+                                        .filter(Boolean)
+                                        .map(x => String(x).toLowerCase());
+                          // español si alguno empieza por 'es-' o es exactamente 'es'
+                          return list.some(code => code === 'es' || code.startsWith('es-'));
+                        }catch(e){ return false; }
                       }
 
-                      // Renderiza UI y persiste
+                      // Carga preferencia guardada o, si no existe, decide por idioma del navegador
+                      function initialLang(){
+                        try{
+                          const saved = localStorage.getItem(STORAGE_KEY);
+                          if (saved && LANGS.includes(saved)) return saved;
+                        }catch(e){}
+                        return browserPrefersSpanish() ? 'ES' : DEFAULT_LANG;
+                      }
+
+                      // Exposición global + data-lang para CSS
+                      function expose(lang){
+                        window.APP_LANG = lang;                                   // variable global
+                        document.documentElement.dataset.lang = lang;             // <html data-lang='ES|EN'>
+                        // document.documentElement.setAttribute('lang', lang.toLowerCase()); // opcional
+                      }
+
                       function apply(lang){
                         btn.textContent = lang;
                         btn.setAttribute('data-lang', lang);
                         expose(lang);
-                        try { localStorage.setItem(STORAGE_KEY, lang); } catch(e){}
-                        // Dispara un CustomEvent por si luego quieres “escuchar” cambios
+                        try{ localStorage.setItem(STORAGE_KEY, lang); }catch(e){}
                         window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
                       }
 
-                      // Toggle al hacer clic
+                      let current = initialLang();
+                      if (!LANGS.includes(current)) current = DEFAULT_LANG;
+                      apply(current);
+
                       btn.addEventListener('click', function(){
                         const i = LANGS.indexOf(current);
                         current = LANGS[(i + 1) % LANGS.length];
                         apply(current);
                       });
-
-                      // Init
-                      if (!LANGS.includes(current)) current = DEFAULT_LANG;
-                      apply(current);
                     })();
                   </script>
                 </div>
