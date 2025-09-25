@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Test - CGLBB</title>
+    <meta property="og:title" content="Test - CGLBB" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;  -webkit-font-smoothing: antialiased;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;  color: inherit;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}input {  padding: 2px 4px;}img {  display: block;}details {  display: block;  margin: 0;  padding: 0;}summary::-webkit-details-marker {  display: none;}[data-thq="accordion"] [data-thq="accordion-content"] {  max-height: 0;  overflow: hidden;  transition: max-height 0.3s ease-in-out;  padding: 0;}[data-thq="accordion"] details[data-thq="accordion-trigger"][open] + [data-thq="accordion-content"] {  max-height: 1000vh;}details[data-thq="accordion-trigger"][open] summary [data-thq="accordion-icon"] {  transform: rotate(180deg);}html { scroll-behavior: smooth  }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Inter;
+        font-size: 16px;
+      }
+
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        color: var(--dl-color-gray-black);
+        background: var(--dl-color-gray-white);
+
+        fill: var(--dl-color-gray-black);
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+    <!--This is the head section-->
+    <!-- <style> ... </style> -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/blaze-slider@latest/dist/blaze.css"
+    />
+  </head>
+  <body>
+    <link rel="stylesheet" href="./style.css" />
+    <div>
+      <link href="./test.css" rel="stylesheet" />
+
+      <div class="test-container1">
+        <section class="test-hero">
+          <header data-thq="thq-navbar" class="test-navbar">
+            <img alt="image" src="public/logo1.svg" class="test-branding" />
+            <div data-thq="thq-mobile-menu" class="test-mobile-menu">
+              <div
+                data-thq="thq-mobile-menu-nav"
+                data-role="Nav"
+                class="test-nav1"
+              >
+                <div class="test-container2">
+                  <img
+                    alt="image"
+                    src="https://play.teleporthq.io/static/svg/placeholders/no-image.svg"
+                    class="test-image"
+                  />
+                  <div data-thq="thq-close-menu" class="test-menu-close">
+                    <svg viewBox="0 0 1024 1024" class="test-icon1">
+                      <path
+                        d="M810 274l-238 238 238 238-60 60-238-238-238 238-60-60 238-238-238-238 60-60 238 238 238-238z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <nav
+                  data-thq="thq-mobile-menu-nav-links"
+                  data-role="Nav"
+                  class="test-nav2"
+                >
+                  <span class="test-text1">About</span>
+                  <span class="test-text2">Features</span>
+                  <span class="test-text3">Pricing</span>
+                  <span class="test-text4">Team</span>
+                  <span class="test-text5">Blog</span>
+                </nav>
+                <div class="test-container3">
+                  <button class="test-login button">Login</button>
+                  <button class="button">Register</button>
+                </div>
+              </div>
+              <div class="test-icon-group">
+                <svg viewBox="0 0 950.8571428571428 1024" class="test-icon3">
+                  <path
+                    d="M925.714 233.143c-25.143 36.571-56.571 69.143-92.571 95.429 0.571 8 0.571 16 0.571 24 0 244-185.714 525.143-525.143 525.143-104.571 0-201.714-30.286-283.429-82.857 14.857 1.714 29.143 2.286 44.571 2.286 86.286 0 165.714-29.143 229.143-78.857-81.143-1.714-149.143-54.857-172.571-128 11.429 1.714 22.857 2.857 34.857 2.857 16.571 0 33.143-2.286 48.571-6.286-84.571-17.143-148-91.429-148-181.143v-2.286c24.571 13.714 53.143 22.286 83.429 23.429-49.714-33.143-82.286-89.714-82.286-153.714 0-34.286 9.143-65.714 25.143-93.143 90.857 112 227.429 185.143 380.571 193.143-2.857-13.714-4.571-28-4.571-42.286 0-101.714 82.286-184.571 184.571-184.571 53.143 0 101.143 22.286 134.857 58.286 41.714-8 81.714-23.429 117.143-44.571-13.714 42.857-42.857 78.857-81.143 101.714 37.143-4 73.143-14.286 106.286-28.571z"
+                  ></path></svg
+                ><svg viewBox="0 0 877.7142857142857 1024" class="test-icon5">
+                  <path
+                    d="M585.143 512c0-80.571-65.714-146.286-146.286-146.286s-146.286 65.714-146.286 146.286 65.714 146.286 146.286 146.286 146.286-65.714 146.286-146.286zM664 512c0 124.571-100.571 225.143-225.143 225.143s-225.143-100.571-225.143-225.143 100.571-225.143 225.143-225.143 225.143 100.571 225.143 225.143zM725.714 277.714c0 29.143-23.429 52.571-52.571 52.571s-52.571-23.429-52.571-52.571 23.429-52.571 52.571-52.571 52.571 23.429 52.571 52.571zM438.857 152c-64 0-201.143-5.143-258.857 17.714-20 8-34.857 17.714-50.286 33.143s-25.143 30.286-33.143 50.286c-22.857 57.714-17.714 194.857-17.714 258.857s-5.143 201.143 17.714 258.857c8 20 17.714 34.857 33.143 50.286s30.286 25.143 50.286 33.143c57.714 22.857 194.857 17.714 258.857 17.714s201.143 5.143 258.857-17.714c20-8 34.857-17.714 50.286-33.143s25.143-30.286 33.143-50.286c22.857-57.714 17.714-194.857 17.714-258.857s5.143-201.143-17.714-258.857c-8-20-17.714-34.857-33.143-50.286s-30.286-25.143-50.286-33.143c-57.714-22.857-194.857-17.714-258.857-17.714zM877.714 512c0 60.571 0.571 120.571-2.857 181.143-3.429 70.286-19.429 132.571-70.857 184s-113.714 67.429-184 70.857c-60.571 3.429-120.571 2.857-181.143 2.857s-120.571 0.571-181.143-2.857c-70.286-3.429-132.571-19.429-184-70.857s-67.429-113.714-70.857-184c-3.429-60.571-2.857-120.571-2.857-181.143s-0.571-120.571 2.857-181.143c3.429-70.286 19.429-132.571 70.857-184s113.714-67.429 184-70.857c60.571-3.429 120.571-2.857 181.143-2.857s120.571-0.571 181.143 2.857c70.286 3.429 132.571 19.429 184 70.857s67.429 113.714 70.857 184c3.429 60.571 2.857 120.571 2.857 181.143z"
+                  ></path></svg
+                ><svg viewBox="0 0 602.2582857142856 1024" class="test-icon7">
+                  <path
+                    d="M548 6.857v150.857h-89.714c-70.286 0-83.429 33.714-83.429 82.286v108h167.429l-22.286 169.143h-145.143v433.714h-174.857v-433.714h-145.714v-169.143h145.714v-124.571c0-144.571 88.571-223.429 217.714-223.429 61.714 0 114.857 4.571 130.286 6.857z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+            <div class="test-container4">
+              <div class="test-container5">
+                <!-- 🔘 Toggle EN/ES con auto-detector por idioma del navegador -->
+                <div id="lang-toggle-teleport" style="display:inline-block">
+                  <button
+                    id="lang-toggle-btn"
+                    aria-label="Cambiar idioma"
+                    title="Cambiar idioma"
+                    style="
+      all: unset;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 40px; height: 32px; padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.10);
+      color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      letter-spacing: .5px; border-radius: 8px; cursor: pointer;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      transition: transform .08s ease;
+    "
+                  >
+                    EN
+                  </button>
+
+                  <style>
+                    #lang-toggle-teleport #lang-toggle-btn:hover{ filter: brightness(1.15); }
+                    #lang-toggle-teleport #lang-toggle-btn:active{ transform: translateY(1px); }
+
+                    /* Para fijarlo en pantalla, descomenta:
+                    #lang-toggle-teleport{ position: fixed; right: 16px; bottom: 16px; z-index: 9999; } */
+                  </style>
+
+                  <script>
+                    (function () {
+                      const STORAGE_KEY = 'site:lang';
+                      const LANGS = ['EN', 'ES'];
+                      const DEFAULT_LANG = 'EN'; // fallback final si todo falla
+
+                      const root = document.getElementById('lang-toggle-teleport');
+                      if (!root) return;
+                      const btn = root.querySelector('#lang-toggle-btn');
+
+                      // ✅ Detección de español por idioma del navegador
+                      function browserPrefersSpanish(){
+                        try{
+                          const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+                                        .filter(Boolean)
+                                        .map(x => String(x).toLowerCase());
+                          // español si alguno empieza por 'es-' o es exactamente 'es'
+                          return list.some(code => code === 'es' || code.startsWith('es-'));
+                        }catch(e){ return false; }
+                      }
+
+                      // Carga preferencia guardada o, si no existe, decide por idioma del navegador
+                      function initialLang(){
+                        try{
+                          const saved = localStorage.getItem(STORAGE_KEY);
+                          if (saved && LANGS.includes(saved)) return saved;
+                        }catch(e){}
+                        return browserPrefersSpanish() ? 'ES' : DEFAULT_LANG;
+                      }
+
+                      // Exposición global + data-lang para CSS
+                      function expose(lang){
+                        window.APP_LANG = lang;                                   // variable global
+                        document.documentElement.dataset.lang = lang;             // <html data-lang='ES|EN'>
+                        // document.documentElement.setAttribute('lang', lang.toLowerCase()); // opcional
+                      }
+
+                      function apply(lang){
+                        btn.textContent = lang;
+                        btn.setAttribute('data-lang', lang);
+                        expose(lang);
+                        try{ localStorage.setItem(STORAGE_KEY, lang); }catch(e){}
+                        window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
+                      }
+
+                      let current = initialLang();
+                      if (!LANGS.includes(current)) current = DEFAULT_LANG;
+                      apply(current);
+
+                      btn.addEventListener('click', function(){
+                        const i = LANGS.indexOf(current);
+                        current = LANGS[(i + 1) % LANGS.length];
+                        apply(current);
+                      });
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+          </header>
+        </section>
+        <div class="test-cases">
+          <div class="test-container6">
+            <div class="test-container7">
+              <section
+                id="faq"
+                style="
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 clamp(12px,3vw,32px);
+  box-sizing:border-box;
+  color:#fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+"
+              >
+                <h2
+                  class="faq-title"
+                  style="
+    margin:0 0 clamp(28px,6vw,60px) 0;
+    font-size:calc(clamp(18px,2.6vw,26px) * 2);
+    font-weight:800;
+    line-height:1.2;
+    text-align:center;
+    color:#fff;
+  "
+                >
+                  Use Cases
+                </h2>
+
+                <div class="faq-grid"></div>
+              </section>
+
+              <style>
+                .faq-grid{
+                  display:grid;
+                  grid-template-columns:repeat(2,1fr);
+                  align-items:start;
+                  gap:0;
+                }
+                .faq-grid .use-item{
+                  position:relative;
+                  padding:clamp(18px,2.6vw,28px);
+                  border-left:1px solid rgba(255,255,255,0.15);
+                  border-bottom:1px solid rgba(255,255,255,0.15);
+                }
+                .faq-grid .use-item:nth-child(2n+1){ border-left:none; }
+
+                .faq-grid .title{
+                  margin:0 0 10px 0;
+                  font-weight:800;
+                  line-height:1.25;
+                  font-size:clamp(18px,2.6vw,26px);
+                  color:#fff;
+                }
+                .faq-grid .desc{
+                  margin:0;
+                  color:rgba(255,255,255,.85);
+                  font-size:clamp(14px,2.1vw,16px);
+                  line-height:1.6;
+                  white-space:pre-wrap;
+                }
+
+                /* Truncado en líneas + degradado */
+                .faq-grid .desc.truncated{
+                  --max-lines: 4;
+                  max-height: calc(var(--max-lines,4) * 1.6em);
+                  overflow:hidden;
+                  position:relative;
+                  display:-webkit-box;
+                  -webkit-line-clamp: var(--max-lines,4);
+                  -webkit-box-orient: vertical;
+                  -webkit-mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
+                          mask-image: linear-gradient(180deg, #000 70%, rgba(0,0,0,0) 100%);
+                }
+
+                .read-more{
+                  position:absolute;
+                  right:clamp(12px,2vw,16px);
+                  bottom:clamp(12px,2vw,16px);
+                  padding:6px 10px;
+                  border-radius:8px;
+                  background:rgba(255,255,255,0.12);
+                  color:#fff;
+                  font-size:12px;
+                  font-weight:600;
+                  letter-spacing:.2px;
+                  border:1px solid rgba(255,255,255,0.2);
+                  cursor:pointer;
+                  backdrop-filter: blur(4px);
+                  transition:transform .15s ease, background .2s ease;
+                }
+                .read-more:hover{ transform:translateY(-1px); background:rgba(255,255,255,0.18); }
+
+                @media (max-width:800px){
+                  .faq-grid{ grid-template-columns:1fr; }
+                  .faq-grid .use-item{ border-left:none; }
+                  .faq-grid .use-item:first-child{ border-top:1px solid rgba(255,255,255,0.15); }
+                }
+
+                /* ===== Modal ===== */
+                .faq-modal-backdrop{
+                  position:fixed;
+                  inset:0;
+                  background:rgba(0,0,0,.55);
+                  display:none;
+                  align-items:center;
+                  justify-content:center;
+                  z-index:9999;
+                }
+                .faq-modal-backdrop.open{ display:flex; }
+
+                .faq-modal{
+                  width:min(900px, 92vw);
+                  max-height:85vh;
+                  background:#0f1115;
+                  color:#fff;
+                  border:1px solid rgba(255,255,255,0.18);
+                  border-radius:16px;
+                  box-shadow:0 20px 60px rgba(0,0,0,.45);
+                  padding:clamp(16px,2.5vw,24px);
+                  overflow:auto;
+                }
+                .faq-modal h3{
+                  margin:0 0 12px 0;
+                  font-size:clamp(18px,2.2vw,24px);
+                  font-weight:800;
+                  line-height:1.25;
+                }
+                .faq-modal p{
+                  margin:0;
+                  font-size:clamp(14px,2.1vw,16px);
+                  line-height:1.7;
+                  white-space:pre-wrap;
+                  color:rgba(255,255,255,.92);
+                }
+                .faq-modal .modal-close{
+                  position:sticky;
+                  top:0;
+                  margin-left:auto;
+                  display:inline-flex;
+                  align-items:center;
+                  gap:8px;
+                  padding:6px 10px;
+                  border-radius:10px;
+                  background:rgba(255,255,255,0.08);
+                  color:#fff;
+                  font-size:12px;
+                  border:1px solid rgba(255,255,255,0.18);
+                  cursor:pointer;
+                  float:right;
+                }
+              </style>
+
+              <!-- Modal -->
+              <div
+                id="faq-modal-backdrop"
+                class="faq-modal-backdrop"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="faq-modal-title"
+              >
+                <div class="faq-modal" tabindex="-1">
+                  <button class="modal-close" type="button" aria-label="Close">
+                    ✕ Cerrar
+                  </button>
+                  <h3 id="faq-modal-title"></h3>
+                  <p id="faq-modal-body"></p>
+                </div>
+              </div>
+
+              <script>
+                (() => {
+                  /* ========= GID fijo y columnas A-D fijas ========= */
+                  const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
+                  const SHEET_GID = '1421800987';
+                  const jsonUrl   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
+
+                  /* ===== Config truncado ===== */
+                  const MAX_LINES = 4;
+                  const LENGTH_THRESHOLD = 180;
+                  const LINE_HEIGHT = 1.6;
+
+                  /* ===== Utils ===== */
+                  const clean   = s => (s ?? '').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
+                  const cellTxt = c => clean(c?.f ?? c?.v ?? '');
+                  const getLang = () => {
+                    const val = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
+                    return val === 'EN' ? 'EN' : 'ES';
+                  };
+
+                  // Helper opcional para tu botón de idioma
+                  if (!window.setSiteLang){
+                    window.setSiteLang = (lang) => {
+                      const val = (lang || '').toString().toUpperCase();
+                      window.APP_LANG = val;
+                      try { localStorage.setItem('site:lang', val); } catch(e){}
+                      window.dispatchEvent(new Event('languagechange'));
+                    };
+                  }
+
+                  /* ===== Estado ===== */
+                  let cachedRows = [];
+                  let openIndex  = null;
+
+                  /* ===== Modal ===== */
+                  const modalBackdrop = document.getElementById('faq-modal-backdrop');
+                  const modalTitleEl  = document.getElementById('faq-modal-title');
+                  const modalBodyEl   = document.getElementById('faq-modal-body');
+                  const modalCloseBtn = modalBackdrop?.querySelector('.modal-close');
+
+                  function openModal(title, body, rowIndex){
+                    if (!modalBackdrop) return;
+                    modalTitleEl.textContent = title || '';
+                    modalBodyEl.textContent  = body  || '';
+                    modalBackdrop.classList.add('open');
+                    openIndex = rowIndex ?? null;
+                    (modalCloseBtn || modalBackdrop.querySelector('.faq-modal'))?.focus();
+                  }
+                  function closeModal(){ modalBackdrop?.classList.remove('open'); openIndex = null; }
+                  modalCloseBtn?.addEventListener('click', closeModal);
+                  modalBackdrop?.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+                  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalBackdrop?.classList.contains('open')) closeModal(); });
+
+                  /* ===== Mapeo por idioma con índices fijos A-D ===== */
+                  // A: EN Title (0), B: EN Text (1), C: ES Título (2), D: ES Texto (3)
+                  function mapRowToEntry(cells, lang){
+                    const c = cells || [];
+                    if (lang === 'EN'){
+                      return { t: cellTxt(c[0]), d: cellTxt(c[1]) };
+                    } else {
+                      return { t: cellTxt(c[2]), d: cellTxt(c[3]) };
+                    }
+                  }
+
+                  function renderForLang(lang){
+                    const grid = document.querySelector('#faq .faq-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    // Título
+                    const h2 = document.querySelector('#faq .faq-title');
+                    if (h2){ h2.textContent = (lang === 'EN') ? 'Use Cases' : 'Casos de uso'; }
+
+                    const frag = document.createDocumentFragment();
+
+                    cachedRows.forEach((r, idx)=>{
+                      const uc = mapRowToEntry(r?.c || [], lang);
+                      if (!uc.t && !uc.d) return;
+
+                      const item = document.createElement('article');
+                      item.className = 'use-item';
+                      item.dataset.rowIndex = idx.toString();
+
+                      const h3 = document.createElement('h3');
+                      h3.className = 'title';
+                      h3.textContent = uc.t || '';
+
+                      const p = document.createElement('p');
+                      p.className = 'desc';
+                      p.textContent = uc.d || '';
+
+                      item.appendChild(h3);
+                      item.appendChild(p);
+                      frag.appendChild(item);
+                    });
+
+                    grid.appendChild(frag);
+
+                    // Truncado + botón
+                    const items = grid.querySelectorAll('.use-item');
+                    items.forEach(item=>{
+                      const p = item.querySelector('.desc');
+                      if (!p) return;
+
+                      const fs = parseFloat(getComputedStyle(p).fontSize) || 16;
+                      const maxPx = MAX_LINES * LINE_HEIGHT * fs;
+                      const needTruncate = (p.scrollHeight > maxPx * 1.02) || (p.textContent.length > LENGTH_THRESHOLD);
+
+                      if (needTruncate){
+                        p.classList.add('truncated');
+                        p.style.setProperty('--max-lines', String(MAX_LINES));
+
+                        let btn = item.querySelector('.read-more');
+                        if (!btn){
+                          btn = document.createElement('button');
+                          btn.type = 'button';
+                          btn.className = 'read-more';
+                          item.appendChild(btn);
+                        }
+                        btn.textContent = (lang==='EN') ? 'Read more' : 'Leer más';
+                      }
+                    });
+
+                    // Sincroniza modal abierto
+                    if (openIndex !== null && openIndex >= 0 && openIndex < cachedRows.length){
+                      const uc = mapRowToEntry(cachedRows[openIndex]?.c || [], lang);
+                      openModal(uc.t || '', uc.d || '', openIndex);
+                    }
+
+                    // Botón cerrar del modal según idioma
+                    if (modalCloseBtn){
+                      modalCloseBtn.textContent = (lang==='EN') ? '✕ Close' : '✕ Cerrar';
+                      modalCloseBtn.setAttribute('aria-label', (lang==='EN') ? 'Close' : 'Cerrar');
+                    }
+                  }
+
+                  async function fetchOnceAndRender(){
+                    const grid = document.querySelector('#faq .faq-grid');
+                    if (!grid) return;
+                    grid.innerHTML = '';
+
+                    try{
+                      const res = await fetch(jsonUrl, { cache:'no-store' });
+                      const txt = await res.text();
+                      const i = txt.indexOf('setResponse('), j = txt.lastIndexOf(');');
+                      if (i === -1 || j === -1){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>No pude leer el Sheet (GViz).</div>`;
+                        return;
+                      }
+                      const data = JSON.parse(txt.substring(i + 'setResponse('.length, j));
+                      let rows = data?.table?.rows || [];
+
+                      if (!rows.length){
+                        grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
+                        return;
+                      }
+
+                      // Omitir SIEMPRE el primer renglón (encabezados de tu hoja)
+                      rows = rows.slice(1);
+
+                      cachedRows = rows;
+                      renderForLang(getLang());
+                    }catch(err){
+                      console.error(err);
+                      if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
+                    }
+                  }
+
+                  // Abrir modal (delegación)
+                  document.addEventListener('click', (e)=>{
+                    const btn = e.target.closest?.('.read-more');
+                    if (!btn) return;
+                    const item = btn.closest('.use-item');
+                    if (!item) return;
+                    const idx = Number(item.dataset.rowIndex || -1);
+                    if (idx < 0) return;
+
+                    const uc = mapRowToEntry(cachedRows[idx]?.c || [], getLang());
+                    openModal(uc.t || '', uc.d || '', idx);
+                  });
+
+                  // Inicial
+                  window.addEventListener('load', fetchOnceAndRender);
+
+                  // Re-render por idioma
+                  window.addEventListener('languagechange', () => { renderForLang(getLang()); });
+
+                  // Cambios desde otras pestañas
+                  window.addEventListener('storage', (ev) => {
+                    if (ev.key === 'site:lang') renderForLang(getLang());
+                  });
+                })();
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/blaze-slider@latest/dist/blaze-slider.min.js"></script>
+    <script
+      defer=""
+      src="https://unpkg.com/@teleporthq/teleport-custom-scripts"
+    ></script>
+  </body>
+</html>
