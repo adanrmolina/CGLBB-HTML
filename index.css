@@ -35,6 +35,10 @@
   object-fit: cover;
 }
  
+.home-navlink {
+  text-decoration: none;
+}
+ 
 .home-mobile-menu {
   top: 0px;
   left: 0px;
