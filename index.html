@@ -219,8 +219,8 @@
           ></video>
           <div class="home-hero-content">
             <div class="home-header-container">
-              <div class="home-header1">
-                <h1 class="home-heading1">
+              <div class="home-header">
+                <h1 class="home-heading">
                   Digitize your operation. Save, scale, and control in real time
                 </h1>
               </div>
@@ -252,16 +252,21 @@
                   const SHEET_ID = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const jsonUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
+                  // Idioma actual
                   const getCurrentLang = () => {
                     const appLang = (window.APP_LANG || localStorage.getItem('site:lang') || 'ES').toString().toUpperCase();
                     return (appLang === 'EN') ? 'EN' : 'ES';
                   };
 
+                  // Detectores / coincidencias
                   const isVideoFile = u => /\.(mp4|webm|ogg)(\?|#|$)/i.test(u||'');
                   const vimeoMatch  = u => (u||'').match(/vimeo\.com\/(\d+)/);
                   const tiktokMatch = u => (u||'').match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
                   const driveMatch  = u => (u||'').match(/drive\.google\.com\/file\/d\/([^/]+)/);
+                  const isYouTube   = u => /(?:youtu\.be\/|youtube\.com\/watch\?v=)/i.test(u||'');
+                  const isInstagram = u => /instagram\.com\/(?:p|reel)\//i.test(u||'');
 
+                  // Iframes bonitos
                   function createBoxedIframe(src,{ratio='16/9',rounded='12px'}={}) {
                     const b=document.createElement('div');
                     b.style.cssText=`position:relative;width:100%;margin:0 auto clamp(10px,1.5vw,16px);aspect-ratio:${ratio};border-radius:${rounded};overflow:hidden;background:#000;max-height:85vh;`;
@@ -272,9 +277,12 @@
                     return b;
                   }
 
+                  // Render media (embeds)
                   function renderMedia({url,poster}) {
                     const s=(url||'').trim();
                     if(!s) return null;
+
+                    // video <video>
                     if(isVideoFile(s)){
                       const v=document.createElement('video');
                       v.src=s; v.controls=true; v.playsInline=true;
@@ -282,9 +290,20 @@
                       v.style.cssText='display:block;width:100%;height:auto;border-radius:12px;margin:0 0 clamp(10px,1.5vw,16px) 0;';
                       return v;
                     }
-                    const vm=vimeoMatch(s); if(vm) return createBoxedIframe(`https://player.vimeo.com/video/${vm[1]}`);
-                    const tk=tiktokMatch(s);if(tk) return createBoxedIframe(`https://www.tiktok.com/embed/${tk[1]}`,{ratio:'9/16'});
-                    const gd=driveMatch(s); if(gd) return createBoxedIframe(`https://drive.google.com/file/d/${gd[1]}/preview`);
+
+                    // Vimeo
+                    const vm=vimeoMatch(s);
+                    if(vm) return createBoxedIframe(`https://player.vimeo.com/video/${vm[1]}`);
+
+                    // TikTok (vertical)
+                    const tk=tiktokMatch(s);
+                    if(tk) return createBoxedIframe(`https://www.tiktok.com/embed/${tk[1]}`,{ratio:'9/16'});
+
+                    // Drive
+                    const gd=driveMatch(s);
+                    if(gd) return createBoxedIframe(`https://drive.google.com/file/d/${gd[1]}/preview`);
+
+                    // Imagen
                     const img=document.createElement('img');
                     img.src=s; img.alt='';
                     img.loading='lazy';
@@ -292,6 +311,7 @@
                     return img;
                   }
 
+                  // Párrafos (descripción)
                   function renderParagraphs(t){
                     const c=document.createElement('div');
                     c.style.cssText='display:block;margin:0;white-space:pre-wrap;';
@@ -304,20 +324,17 @@
                     return c;
                   }
 
-                  // === Botón con background gris oscuro + animación cool ===
-                  function renderLinkButton({ url, label }) {
+                  // Botón gris oscuro con animación 'cool'
+                  function makeCoolButton({ url, label }) {
                     const a = document.createElement('a');
-                    a.href = url;
-                    a.target = '_blank';
-                    a.rel = 'noopener';
+                    a.href = url; a.target = '_blank'; a.rel = 'noopener';
                     a.textContent = (label || '').trim() || (getCurrentLang()==='EN' ? 'Open' : 'Abrir');
-
                     a.style.cssText = `
                       display:inline-block;
                       margin-top: 10px;
                       padding: 12px 20px;
                       border-radius:10px;
-                      background: #2b2b2b;                /* gris oscuro base */
+                      background: #2b2b2b;
                       text-decoration:none;
                       font-weight:700;
                       font-size: clamp(14px,1.8vw,16px);
@@ -327,11 +344,10 @@
                       transition: all .25s ease;
                       transform-origin: center;
                     `;
-
                     a.onmouseenter = () => {
-                      a.style.background = '#3a3a3a';                     // un poco más claro
-                      a.style.boxShadow = '0 0 15px rgba(180,180,180,.6), 0 0 30px rgba(180,180,180,.4)'; // glow
-                      a.style.transform = 'scale(1.07) rotate(-1deg)';     // leve rotación + zoom
+                      a.style.background = '#3a3a3a';
+                      a.style.boxShadow = '0 0 15px rgba(180,180,180,.6), 0 0 30px rgba(180,180,180,.4)';
+                      a.style.transform = 'scale(1.07) rotate(-1deg)';
                     };
                     a.onmouseleave = () => {
                       a.style.background = '#2b2b2b';
@@ -341,26 +357,37 @@
                     return a;
                   }
 
+                  // Mapea fila -> registro
                   let cachedRows = [];
                   function mapRowToRecord(rowCells, lang) {
                     const c = rowCells || [];
                     return {
-                      title : (lang === 'EN' ? c[0]?.v : c[2]?.v || '').trim(),
-                      text  : (lang === 'EN' ? c[1]?.v : c[3]?.v || '').trim(),
+                      title : (lang === 'EN' ? (c[0]?.v||'') : (c[2]?.v||'')).trim(),
+                      text  : (lang === 'EN' ? (c[1]?.v||'') : (c[3]?.v||'')).trim(),
                       media : (c[4]?.v || '').trim(),
                       href  : (c[5]?.v || '').trim(),
                       poster: (c[6]?.v || '').trim()
                     };
                   }
 
+                  // Render del feed
                   function renderFeedForLang(lang) {
                     const feed = document.getElementById('feed');
                     if (!feed) return;
                     feed.innerHTML = '';
 
-                    cachedRows.slice().reverse().forEach(r => {
+                    // sin reverse y saltando encabezados
+                    const rows = cachedRows.slice(1);
+
+                    rows.forEach(r => {
                       const rec = mapRowToRecord(r.c || [], lang);
                       if (!rec.title && !rec.text) return;
+
+                      const url = rec.media || rec.href || '';  // la URL que tengamos
+                      const hasTikTok = tiktokMatch(url);
+                      const hasVimeo  = vimeoMatch(url);
+                      const isYT      = isYouTube(url);
+                      const isIG      = isInstagram(url);
 
                       const card=document.createElement('article');
                       card.style.cssText=`
@@ -378,6 +405,7 @@
                       card.onmouseenter=()=>{card.style.boxShadow='0 6px 18px rgba(0,0,0,.4)'; card.style.transform='translateY(-2px)';};
                       card.onmouseleave=()=>{card.style.boxShadow='0 2px 10px rgba(0,0,0,.3)'; card.style.transform='none';};
 
+                      // Título
                       if (rec.title) {
                         const h=document.createElement('h3');
                         h.textContent=rec.title;
@@ -385,19 +413,56 @@
                         card.appendChild(h);
                       }
 
-                      if (rec.href) {
-                        const btn = renderLinkButton({ url: rec.href, label: rec.text });
+                      // Caso 1: TikTok / Vimeo -> media + descripción (sin botón)
+                      if (hasTikTok || hasVimeo) {
+                        const mediaEl = renderMedia({url: rec.media || rec.href, poster: rec.poster});
+                        if (mediaEl) card.appendChild(mediaEl);
+                        if (rec.text) card.appendChild(renderParagraphs(rec.text));
+                        feed.appendChild(card);
+                        return;
+                      }
+
+                      // Caso 2: YouTube / Instagram -> descripción + botón (sin meter descripción en el botón)
+                      if (isYT || isIG) {
+                        // descripción después del título
+                        if (rec.text) card.appendChild(renderParagraphs(rec.text));
+
+                        // botón a la plataforma
+                        const label = isYT
+                          ? (getCurrentLang()==='EN' ? 'Watch on YouTube' : 'Ver en YouTube')
+                          : (getCurrentLang()==='EN' ? 'View on Instagram' : 'Ver en Instagram');
+
                         const wrapper = document.createElement('div');
                         wrapper.style.textAlign = 'center';
+                        const btn = makeCoolButton({ url, label });
+                        wrapper.appendChild(btn);
+                        card.appendChild(wrapper);
+
+                        feed.appendChild(card);
+                        return;
+                      }
+
+                      // Caso 3: Otros media (video file, drive, imagen) -> media + (si hay) descripción
+                      if (rec.media) {
+                        const mediaEl = renderMedia({url:rec.media, poster:rec.poster});
+                        if (mediaEl) card.appendChild(mediaEl);
+                        if (rec.text) card.appendChild(renderParagraphs(rec.text));
+                        feed.appendChild(card);
+                        return;
+                      }
+
+                      // Caso 4: Fila 'link' sin media/YT/IG -> título + botón (texto del botón = descripción)
+                      if (rec.href) {
+                        const wrapper = document.createElement('div');
+                        wrapper.style.textAlign = 'center';
+                        const btn = makeCoolButton({ url: rec.href, label: rec.text });
                         wrapper.appendChild(btn);
                         card.appendChild(wrapper);
                         feed.appendChild(card);
                         return;
                       }
 
-                      const mediaEl = renderMedia({url:rec.media, poster:rec.poster});
-                      if(rec.media && mediaEl) card.appendChild(mediaEl);
-
+                      // Caso 5: Solo texto
                       if (rec.text) {
                         card.appendChild(renderParagraphs(rec.text));
                       }
@@ -406,6 +471,7 @@
                     });
                   }
 
+                  // Carga y render inicial
                   async function fetchOnceAndRenderInitial(){
                     const feed=document.getElementById('feed');
                     if (!feed) return;
@@ -426,6 +492,7 @@
                     }
                   }
 
+                  // Eventos
                   window.addEventListener('load', fetchOnceAndRenderInitial);
                   window.addEventListener('languagechange', () => renderFeedForLang(getCurrentLang()));
                   window.addEventListener('storage', ev => {
@@ -436,24 +503,6 @@
             </div>
           </div>
         </div>
-        <section class="home-link1">
-          <div class="home-content">
-            <div class="home-header2">
-              <h2 class="home-heading2">
-                <span>Learn more...</span>
-                <br />
-              </h2>
-            </div>
-            <a
-              href="https://www.mirrasset.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              class="home-link2"
-            >
-              Demo
-            </a>
-          </div>
-        </section>
         <div class="home-stats">
           <div class="home-container18">
             <div class="home-container19">
@@ -779,19 +828,6 @@
                     return val === 'EN' ? 'EN' : 'ES';
                   };
 
-                  // Encabezado: ahora hay 4 columnas -> Question | Answer | Pregunta | Respuesta
-                  function isHeaderRow(row){
-                    const a = cellText(row?.c?.[0]).toLowerCase();
-                    const b = cellText(row?.c?.[1]).toLowerCase();
-                    const c = cellText(row?.c?.[2]).toLowerCase();
-                    const d = cellText(row?.c?.[3]).toLowerCase();
-                    const okA = (a === 'question');
-                    const okB = (b === 'answer');
-                    const okC = (c === 'pregunta');
-                    const okD = (d === 'respuesta');
-                    return (okA && okB) || (okC && okD) || (okA && okD) || (okB && okC);
-                  }
-
                   // --------- Cache y mapeo por idioma ----------
                   let cachedRows = [];
 
@@ -811,7 +847,7 @@
                     if (!grid) return;
                     grid.innerHTML = '';
 
-                    // (opcional) cambia el título H2 según idioma
+                    // Cambia el título H2 según idioma
                     const h2 = document.querySelector('#faq .faq-title');
                     if (h2){
                       h2.textContent = (lang === 'EN') ? 'Frequently Asked Questions' : 'Preguntas Frecuentes';
@@ -860,13 +896,14 @@
                         grid.innerHTML = `<div style='padding:16px;color:#f88'>Hoja vacía.</div>`;
                         return;
                       }
-                      if (isHeaderRow(rows[0])) rows = rows.slice(1);
+
+                      // 🔑 Omitir SIEMPRE el primer renglón (encabezados)
+                      rows = rows.slice(1);
 
                       cachedRows = rows;
                       renderFAQForLang(getLang());
                     }catch(err){
                       console.error(err);
-                      const grid = document.querySelector('#faq .faq-grid');
                       if (grid) grid.innerHTML = `<div style='padding:16px;color:#f88'>Error al leer la hoja.</div>`;
                     }
                   }
