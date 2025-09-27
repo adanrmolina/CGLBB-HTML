@@ -62,7 +62,6 @@
       <div class="home-container10">
         <section
           id="home"
-          data-nav="Home"
           data-nav-en="Home"
           data-nav-es="Inicio"
           class="home-home"
@@ -75,217 +74,6 @@
             />
             <div class="home-container11">
               <div class="home-container12">
-                <!-- 🍔 One-Page Menu (estilo igual al toggle EN/ES) -->
-                <div id="onepage-menu-teleport" style="display:inline-block">
-                  <!-- Botón estilo pastilla -->
-                  <button
-                    id="onepage-menu-btn"
-                    aria-label="Abrir menú de secciones"
-                    title="Menú"
-                    style="
-      all: unset;
-      display:inline-flex; align-items:center; justify-content:center;
-      min-width:40px; height:32px; padding:0 10px;
-      border:1px solid rgba(255,255,255,.35);
-      background:rgba(255,255,255,.10);
-      color:#fff; font:600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      letter-spacing:.5px; border-radius:8px; cursor:pointer;
-      user-select:none; -webkit-tap-highlight-color:transparent;
-      transition:transform .08s ease;
-      gap:8px;
-    "
-                  >
-                    <span
-                      aria-hidden="true"
-                      style="display:inline-block;width:14px;height:12px;position:relative;"
-                    >
-                      <span
-                        style="position:absolute;left:0;right:0;top:0;height:2px;background:#fff;border-radius:2px;"
-                      ></span>
-                      <span
-                        style="position:absolute;left:0;right:0;top:5px;height:2px;background:#fff;border-radius:2px;"
-                      ></span>
-                      <span
-                        style="position:absolute;left:0;right:0;top:10px;height:2px;background:#fff;border-radius:2px;"
-                      ></span>
-                    </span>
-                    MENU
-                  </button>
-
-                  <!-- Backdrop -->
-                  <div
-                    id="onepage-menu-backdrop"
-                    hidden=""
-                    style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);"
-                  ></div>
-
-                  <!-- Panel -->
-                  <nav
-                    id="onepage-menu-panel"
-                    hidden=""
-                    aria-label="Secciones"
-                    role="dialog"
-                    aria-modal="true"
-                    style="
-        position:fixed; right:16px; bottom:60px; z-index:10000;
-        width:min(88vw,300px); max-height:70vh; overflow:auto;
-        padding:12px; border-radius:12px;
-        border:1px solid rgba(255,255,255,.25);
-        background:rgba(18,18,18,.92); color:#fff;
-        font:500 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-        box-shadow:0 16px 40px rgba(0,0,0,.35);
-       "
-                  >
-                    <strong
-                      style="display:block;margin:2px 0 10px;font:700 14px/1 system-ui;letter-spacing:.3px;"
-                    >
-                      Navegación
-                    </strong>
-                    <div
-                      id="onepage-menu-list"
-                      style="display:flex;flex-direction:column;gap:6px;"
-                    ></div>
-                  </nav>
-
-                  <style>
-                    /* Hover/active igual que el toggle EN/ES */
-                    #onepage-menu-teleport #onepage-menu-btn:hover {
-                      filter: brightness(1.15);
-                    }
-
-                    #onepage-menu-teleport #onepage-menu-btn:active {
-                      transform: translateY(1px);
-                    }
-
-                    /* Para fijarlo en pantalla junto al toggle, descomenta:
-                    #onepage-menu-teleport{ position: fixed; right: 16px; bottom: 56px; z-index: 9999; }
-                    */
-
-                    /* Items del panel */
-                    #onepage-menu-teleport .op-item {
-                      display: flex;
-                      align-items: center;
-                      gap: 10px;
-                      padding: 10px;
-                      border-radius: 10px;
-                      text-decoration: none;
-                      color: inherit;
-                      border: 1px solid rgba(255, 255, 255, .10);
-                      background: rgba(255, 255, 255, .05);
-                      transition: background .15s ease, border-color .15s ease, transform .05s ease;
-                    }
-
-                    #onepage-menu-teleport .op-item:hover {
-                      background: rgba(255, 255, 255, .09);
-                      border-color: rgba(255, 255, 255, .22);
-                    }
-
-                    #onepage-menu-teleport .op-item.active {
-                      border-color: rgba(255, 255, 255, .38);
-                      background: rgba(80, 160, 255, .18);
-                    }
-                  </style>
-
-                  <script>
-                    (function(){
-                      const root     = document.getElementById('onepage-menu-teleport');
-                      if(!root) return;
-                      const btn      = root.querySelector('#onepage-menu-btn');
-                      const panel    = root.querySelector('#onepage-menu-panel');
-                      const backdrop = root.querySelector('#onepage-menu-backdrop');
-                      const listBox  = root.querySelector('#onepage-menu-list');
-
-                      const $$ = (s,c=document)=>Array.from(c.querySelectorAll(s));
-
-                      function getLang(){
-                        try{ return (window.APP_LANG || localStorage.getItem('site:lang') || 'EN').toUpperCase()==='ES' ? 'ES' : 'EN'; }
-                        catch(e){ return 'EN'; }
-                      }
-                      function titleFor(el){
-                        const base = el.getAttribute('data-nav');
-                        const en   = el.getAttribute('data-nav-en');
-                        const es   = el.getAttribute('data-nav-es');
-                        const lg   = getLang();
-                        if(lg==='ES' && es) return es;
-                        if(lg==='EN' && en) return en;
-                        return base || el.id || 'Section';
-                      }
-                      function visible(el){ const r = el.getBoundingClientRect(); return r.width>0 && r.height>0; }
-                      function findSections(){
-                        const nodes = $$('[data-nav][id]').filter(visible);
-                        const seen = new Set();
-                        return nodes.filter(n => !seen.has(n.id) && seen.add(n.id));
-                      }
-
-                      function buildList(){
-                        listBox.innerHTML = '';
-                        const sections = findSections();
-                        if(!sections.length){
-                          const msg = document.createElement('div');
-                          msg.textContent = 'No se encontraron secciones con data-nav e id.';
-                          msg.style.opacity = '.7'; msg.style.padding = '6px 8px';
-                          listBox.appendChild(msg); return;
-                        }
-                        sections.forEach(sec=>{
-                          const a = document.createElement('a');
-                          a.className = 'op-item';
-                          a.href = '#'+sec.id;
-                          a.textContent = titleFor(sec);
-                          a.dataset.target = sec.id;
-                          a.addEventListener('click', (e)=>{
-                            e.preventDefault();
-                            try{ sec.scrollIntoView({ behavior:'smooth', block:'start' }); }
-                            catch(_){ const r = sec.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top, behavior:'smooth' }); }
-                            closeMenu();
-                            try{ history.replaceState(null,'','#'+sec.id); }catch(_){}
-                          });
-                          listBox.appendChild(a);
-                        });
-                      }
-
-                      function openMenu(){ buildList(); panel.hidden=false; backdrop.hidden=false; }
-                      function closeMenu(){ panel.hidden=true;  backdrop.hidden=true;  }
-
-                      btn.addEventListener('click', e=>{ e.stopPropagation(); openMenu(); });
-                      backdrop.addEventListener('click', closeMenu);
-                      window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
-                      window.addEventListener('languagechange', ()=>{ if(!panel.hidden) buildList(); });
-
-                      // Resaltado de sección visible
-                      let io;
-                      function attachObserver(){
-                        if(io) try{ io.disconnect(); }catch(_){}
-                        const sections = findSections();
-                        io = new IntersectionObserver((entries)=>{
-                          // marcar la más cercana al top entre las que intersectan
-                          let topMost=null, best=Infinity;
-                          entries.forEach(en=>{
-                            if(!en.isIntersecting) return;
-                            const d=Math.abs(en.target.getBoundingClientRect().top);
-                            if(d<best){ best=d; topMost=en.target; }
-                          });
-                          if(!topMost) return;
-                          $$('#onepage-menu-teleport .op-item').forEach(a=>{
-                            a.classList.toggle('active', a.dataset.target === topMost.id);
-                          });
-                        },{ rootMargin:'0px 0px -60% 0px', threshold:[0,.25,.5,.75] });
-                        sections.forEach(s=>io.observe(s));
-                      }
-                      attachObserver();
-
-                      // Si tu constructor injerta tarde nodos, escucha cambios:
-                      const mo = new MutationObserver(()=>{
-                        if(!panel.hidden) buildList();
-                        attachObserver();
-                      });
-                      mo.observe(document.body, { childList:true, subtree:true });
-                    })();
-                  </script>
-                </div>
-              </div>
-            </div>
-            <div class="home-container13">
-              <div class="home-container14">
                 <!-- 🔘 Toggle EN/ES con auto-detector por idioma del navegador -->
                 <div id="lang-toggle-teleport" style="display:inline-block">
                   <button
@@ -387,8 +175,8 @@
           ></video>
           <div class="home-hero-content">
             <div class="home-header-container">
-              <div class="home-container15">
-                <div class="home-container16">
+              <div class="home-container13">
+                <div class="home-container14">
                   <section
                     id="single"
                     style="
@@ -508,15 +296,14 @@
             </div>
           </div>
         </section>
-        <div
+        <section
           id="content"
-          data-nav="Content"
           data-nav-en="Services"
           data-nav-es="Servicios"
           class="home-content"
         >
-          <div class="home-container17">
-            <div class="home-container18">
+          <div class="home-container15">
+            <div class="home-container16">
               <section
                 id="feed"
                 style="
@@ -763,16 +550,15 @@
               </script>
             </div>
           </div>
-        </div>
-        <div
+        </section>
+        <section
           id="stats"
-          data-nav="Stats"
           data-nav-en="Statistical Data"
           data-nav-es="Datos Estadisticos"
           class="home-stats"
         >
-          <div class="home-container19">
-            <div class="home-container20">
+          <div class="home-container17">
+            <div class="home-container18">
               <section
                 id="stats"
                 style="
@@ -1020,16 +806,15 @@
               </script>
             </div>
           </div>
-        </div>
-        <div
+        </section>
+        <section
           id="cases"
-          data-nav="Cases"
           data-nav-endata-nav-en="Use Cases"
           data-nav-es="Casos de Uso"
           class="home-cases"
         >
-          <div class="home-container21">
-            <div class="home-container22">
+          <div class="home-container19">
+            <div class="home-container20">
               <section
                 id="usecases"
                 style="
@@ -1460,16 +1245,15 @@
               </script>
             </div>
           </div>
-        </div>
-        <div
+        </section>
+        <section
           id="faq"
-          data-nav="Faq"
           data-nav-en="FAQ"
           data-nav-es="Preguntas Frecuentes"
           class="home-faq"
         >
-          <div class="home-container23">
-            <div class="home-container24">
+          <div class="home-container21">
+            <div class="home-container22">
               <section
                 id="faq"
                 style="
@@ -1655,22 +1439,21 @@
               </script>
             </div>
           </div>
-        </div>
-        <div
+        </section>
+        <section
           id="social"
-          data-nav="Social"
           data-nav-en="Social Media"
-          data-nav-es="Social Media"
+          data-nav-es="Redes Sociales"
           class="home-social-media"
         >
-          <div class="home-container25">
+          <div class="home-container23">
             <img
               alt="Engineering Solutions Logo"
               src="public/lbb_logo_hw.svg"
               class="home-image1"
             />
             <div class="home-social-links">
-              <div class="home-container26">
+              <div class="home-container24">
                 <svg
                   viewBox="0 0 877.7142857142857 1024"
                   class="home-icon1 thq-icon-small"
@@ -1700,7 +1483,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
     <script src="https://unpkg.com/blaze-slider@latest/dist/blaze-slider.min.js"></script>
