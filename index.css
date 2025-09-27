@@ -36,7 +36,7 @@
 }
  
 .home-container11 {
-  right: 110px;
+  right: 120px;
   position: fixed;
 }
  
@@ -205,7 +205,7 @@
   }
   .home-container11 {
     top: 28px;
-    right: 110px;
+    right: 10px;
     position: fixed;
   }
   .home-hero-content {
@@ -277,7 +277,7 @@
  
 @media(max-width: 767px) {
   .home-container11 {
-    right: 120px;
+    right: 10px;
     position: fixed;
   }
   .home-header-container {
@@ -304,7 +304,7 @@
     padding-top: var(--dl-layout-space-unit);
   }
   .home-container11 {
-    right: 110px;
+    right: 10px;
   }
   .home-hero-content {
     gap: var(--dl-layout-space-threeunits);
