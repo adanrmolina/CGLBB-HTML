@@ -66,14 +66,172 @@
           data-nav-es="Inicio"
           class="home-home"
         >
+          <div>
+            <div class="home-container12">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Home', es='Inicio';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
           <header data-thq="thq-navbar" class="home-navbar">
             <img
               alt="image"
               src="public/lbb_logo_hw.svg"
               class="home-branding"
             />
-            <div class="home-container11">
-              <div class="home-container12">
+            <div class="home-container13">
+              <div class="home-container14">
+                <!-- 🔘 Botón “Ir a la siguiente sección” (manual con tus IDs) -->
+                <div id="section-next-teleport" style="display:inline-block">
+                  <button
+                    id="section-next-btn"
+                    aria-label="Navegar a la siguiente sección"
+                    title="Navegar a la siguiente sección"
+                    style="
+      all: unset;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 40px; height: 32px; padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.10);
+      color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      letter-spacing: .5px; border-radius: 8px; cursor: pointer;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      transition: transform .08s ease;"
+                  >
+                    Ir a: —
+                  </button>
+
+                  <style>
+                    #section-next-teleport #section-next-btn:hover {
+                      filter: brightness(1.15);
+                    }
+
+                    #section-next-teleport #section-next-btn:active {
+                      transform: translateY(1px);
+                    }
+
+                    /* Fijarlo en pantalla (opcional): */
+                    /* #section-next-teleport{ position: fixed; right: 16px; bottom: 64px; z-index: 9999; } */
+                  </style>
+
+                  <script>
+                      (function(){
+                      // ====== EDITA si tienes header fijo (altura en px) ======
+                      const HEADER_OFFSET_PX = 80;
+
+                      // ====== TUS SECCIONES (en orden) ======
+                      const SECTIONS = ['#home','#content','#stats','#cases','#faq','#social'];
+
+                      // (Opcional) títulos por idioma; si no quieres tocar, usa los que dejo.
+                      const TITLES_ES = {
+                        '#home':'Inicio', '#content':'Contenido', '#stats':'Estadísticas',
+                        '#cases':'Casos', '#faq':'FAQ', '#social':'Social'
+                      };
+                      const TITLES_EN = {
+                        '#home':'Home', '#content':'Content', '#stats':'Stats',
+                        '#cases':'Cases', '#faq':'FAQ', '#social':'Social'
+                      };
+
+                      // Detecta idioma (usa tu toggle si existe; si no, ES por navegador)
+                      function getLang(){
+                        try{
+                          const d = (document.documentElement.dataset||{}).lang;
+                          if (d==='EN'||d==='ES') return d;
+                        }catch(e){}
+                        if (window.APP_LANG==='EN'||window.APP_LANG==='ES') return window.APP_LANG;
+                        try{
+                          const list=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language])
+                            .filter(Boolean).map(x=>String(x).toLowerCase());
+                          return list.some(c=>c==='es'||c.startsWith('es-'))?'ES':'EN';
+                        }catch(e){}
+                        return 'ES';
+                      }
+
+                      const root=document.getElementById('section-next-teleport');
+                      if(!root) return;
+                      const btn=root.querySelector('#section-next-btn');
+
+                      function q(sel){ return document.querySelector(sel); }
+                      function topOf(el){ const r=el.getBoundingClientRect(); return r.top+window.scrollY; }
+
+                      // Resuelve secciones y les asigna título
+                      function resolveSections(){
+                        const lang=getLang();
+                        const map = (lang==='EN') ? TITLES_EN : TITLES_ES;
+                        return SECTIONS.map(sel=>{
+                          const el=q(sel);
+                          if(!el) return null;
+                          const tAttr = el.getAttribute(lang==='ES'?'data-nav-es':'data-nav-en');
+                          const tAlt  = el.getAttribute(lang==='ES'?'data-nav-en':'data-nav-es');
+                          const title = (tAttr||tAlt||map[sel]||el.getAttribute('title')||el.id||sel).trim();
+                          return { el, title, sel };
+                        }).filter(Boolean);
+                      }
+
+                      let sections=[], idx=0;
+
+                      function setNextLabel(){
+                        const lang=getLang();
+                        if(!sections.length){ btn.textContent=(lang==='ES'?'Configura IDs':'Configure IDs'); btn.disabled=true; return; }
+                        btn.disabled=false;
+                        const next=sections[(idx+1)%sections.length];
+                        btn.textContent=(lang==='ES'?'Ir a: ':'Go to: ')+next.title;
+                      }
+
+                      function updateIndexByScroll(){
+                        if(!sections.length) return;
+                        const y=window.scrollY;
+                        let found=0;
+                        for(let i=0;i<sections.length;i++){
+                          const t=topOf(sections[i].el)-HEADER_OFFSET_PX;
+                          if(t<=y) found=i;
+                        }
+                        idx=found;
+                        setNextLabel();
+                      }
+
+                      function goNext(){
+                        if(!sections.length) return;
+                        idx=(idx+1)%sections.length;
+                        const target=sections[idx].el;
+                        try{ target.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){}
+                        setTimeout(setNextLabel,500);
+                      }
+
+                      btn.addEventListener('click', goNext);
+                      window.addEventListener('scroll', ()=>{ clearTimeout(window.__secnav_t); window.__secnav_t=setTimeout(updateIndexByScroll,80); });
+                      window.addEventListener('resize', updateIndexByScroll);
+                      window.addEventListener('languagechange', init); // si cambias EN/ES, se actualiza
+
+                      function init(){
+                        sections=resolveSections();
+                        // Aviso rápido si falta alguna
+                        const missing=SECTIONS.filter(sel=>!document.querySelector(sel));
+                        if(missing.length){
+                          console.warn('No se encontraron estas secciones:', missing);
+                        }
+                        updateIndexByScroll();
+                      }
+
+                      if(document.readyState==='complete'||document.readyState==='interactive'){ setTimeout(init,0); }
+                      else{ document.addEventListener('DOMContentLoaded', init); }
+                      window.addEventListener('load', ()=>setTimeout(init,200));
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+            <div class="home-container15">
+              <div class="home-container16">
                 <!-- 🔘 Toggle EN/ES con auto-detector por idioma del navegador -->
                 <div id="lang-toggle-teleport" style="display:inline-block">
                   <button
@@ -175,8 +333,8 @@
           ></video>
           <div class="home-hero-content">
             <div class="home-header-container">
-              <div class="home-container13">
-                <div class="home-container14">
+              <div class="home-container17">
+                <div class="home-container18">
                   <section
                     id="single"
                     style="
@@ -302,8 +460,24 @@
           data-nav-es="Servicios"
           class="home-content"
         >
-          <div class="home-container15">
-            <div class="home-container16">
+          <div>
+            <div class="home-container20">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Services', es='Servicios';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container21">
+            <div class="home-container22">
               <section
                 id="feed"
                 style="
@@ -557,8 +731,24 @@
           data-nav-es="Datos Estadisticos"
           class="home-stats"
         >
-          <div class="home-container17">
-            <div class="home-container18">
+          <div>
+            <div class="home-container24">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Stats', es='Estadisticas';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container25">
+            <div class="home-container26">
               <section
                 id="stats"
                 style="
@@ -809,12 +999,28 @@
         </section>
         <section
           id="cases"
-          data-nav-endata-nav-en="Use Cases"
           data-nav-es="Casos de Uso"
+          data-nav-endata-nav-en="Use Cases"
           class="home-cases"
         >
-          <div class="home-container19">
-            <div class="home-container20">
+          <div>
+            <div class="home-container28">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Use Cases', es='Casos de Uso';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container29">
+            <div class="home-container30">
               <section
                 id="usecases"
                 style="
@@ -1252,8 +1458,24 @@
           data-nav-es="Preguntas Frecuentes"
           class="home-faq"
         >
-          <div class="home-container21">
-            <div class="home-container22">
+          <div>
+            <div class="home-container32">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='FAQ', es='Preguntas Frecuentes';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container33">
+            <div class="home-container34">
               <section
                 id="faq"
                 style="
@@ -1441,47 +1663,313 @@
           </div>
         </section>
         <section
+          id="contact"
+          data-nav-en="Contact"
+          data-nav-es="Contacto"
+          class="home-comtact"
+        >
+          <div>
+            <div class="home-container36">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Contact', es='Contacto';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container37">
+            <div class="home-container38">
+              <section
+                id="contact-card"
+                style="width:100%;max-width:560px;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif"
+              >
+                <div class="contact-inner"></div>
+              </section>
+
+              <style>
+                #contact-card .title {
+                  font-weight: 700;
+                  font-size: clamp(18px, 2.4vw, 22px);
+                  margin: 0 0 12px 0
+                }
+
+                #contact-card .row {
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 10px;
+                  padding: 10px 0
+                }
+
+                #contact-card .ico {
+                  width: 22px;
+                  height: 22px;
+                  flex: 0 0 22px;
+                  margin-top: 2px;
+                  color: currentColor;
+                  fill: currentColor
+                }
+
+                #contact-card a {
+                  color: #8ab4ff;
+                  text-decoration: none
+                }
+
+                #contact-card a:hover {
+                  text-decoration: underline
+                }
+
+                #contact-card .label {
+                  font-weight: 600;
+                  margin: 0;
+                  font-size: 14px;
+                  opacity: .9
+                }
+
+                #contact-card .val {
+                  margin: 2px 0 0 0;
+                  font-size: 14px;
+                  word-break: break-word
+                }
+
+                #contact-card .socials {
+                  display: flex;
+                  gap: 14px;
+                  padding-top: 18px;
+                  flex-wrap: wrap
+                }
+
+                #contact-card .socials a {
+                  display: inline-flex;
+                  width: 22px;
+                  height: 22px;
+                  color: inherit
+                }
+
+                #contact-card .socials a svg {
+                  width: 100%;
+                  height: 100%;
+                  fill: currentColor
+                }
+              </style>
+
+              <script>
+                  (() => {
+                  const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
+                  const SHEET_GID = '491949069';
+                  const tq = encodeURIComponent('select A,B where A is not null and B is not null offset 1');
+                  const gvizUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&tq=${tq}&cb=${Date.now()}`;
+                  const csvUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+
+                  const $box = () => document.querySelector('#contact-card .contact-inner');
+
+                  const clean = s => (s||'').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
+                  const norm  = s => clean(s).toLowerCase()
+                                  .replace(/\s+/g,' ')
+                                  .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
+                                  .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n');
+
+                  const icons = {
+                    globe:`<svg viewBox='0 0 24 24' class='ico' aria-hidden='true'><path d='M12 2a10 10 0 100 20 10 10 0 000-20zm7.9 9h-3.2a15 15 0 00-1.1-5 8 8 0 014.3 5zM12 4a13 13 0 011.8 7H10.2A13 13 0 0112 4zM7.4 16A13 13 0 016 12H2.1a8 8 0 005.3 7.2A15 15 0 017.4 16zM6 12a15 15 0 001.1 5h-3A8 8 0 012.1 12H6zm10.5 5a15 15 0 001.1-5h3.2a8 8 0 01-4.3 5zM12 20a13 13 0 01-1.8-7h3.6A13 13 0 0112 20z'/></svg>`,
+                    mail:`<svg viewBox='0 0 24 24' class='ico' aria-hidden='true'><path d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z'/></svg>`,
+                    phone:`<svg viewBox='0 0 24 24' class='ico' aria-hidden='true'><path d='M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.6.7 4 .7.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.1 22 2 13.9 2 3c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.4.2 2.8.7 4 .1.4 0 .8-.3 1.1l-2.2 2.2z'/></svg>`,
+                    clock:`<svg viewBox='0 0 24 24' class='ico' aria-hidden='true'><path d='M12 1.9A10.1 10.1 0 112 12 10.1 10.1 0 0112 1.9zm.8 5h-1.6v5.1l4.3 2.6.8-1.3-3.5-2.1V6.9z'/></svg>`,
+                    li:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M4.98 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM3 8.98h4v12H3v-12zM9 8.98h3.8v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6v6.3h-4v-5.6c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9v5.7H9v-12z'/></svg>`,
+                    fb:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M13 10h3V7h-3c-1.7 0-3 1.3-3 3v2H8v3h2v6h3v-6h2.2l.8-3H13v-2c0-.6.4-1 1-1z'/></svg>`,
+                    ig:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.9a1.1 1.1 0 10.001 2.201A1.1 1.1 0 0018.5 6.1z'/></svg>`,
+                    tt:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M14 3h3s.3 2.8 5 3v3c-2.1.2-3.9-.5-5-1.4V16a5.9 5.9 0 11-6.5-5.9V13a2.9 2.9 0 102.5 2.9V3z'/></svg>`,
+                    x:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M3 3h4.7l5.5 7.6L19 3h2l-7 9.5L21 21h-4.7l-5.9-8.1L9 21H7l1.6-6.1L3 3z'/></svg>`,
+                    wa:`<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M20 4.9A9.7 9.7 0 003.2 18.5L2 22l3.6-1a9.7 9.7 0 004.7 1.2h.1A9.7 9.7 0 2020 4.9zM6.5 19l-.2.1-.9.2.3-.9.1-.2a7.8 7.8 0 1114-4.3 7.8 7.8 0 01-7.7 7.8H12A7.7 7.7 0 016.5 19zm10-5.2c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1l-.5.6c-.1.2-.3.2-.5.1-.2-.1-.9-.3-1.7-1.1-.6-.6-1-1.3-1.1-1.5-.1-.2 0-.3.1-.5l.3-.4c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.5.1-.7.3-.8.8-1.1 2-1.1 3.1 0 1.8 1.3 3.5 1.5 3.7.2.3 2.5 4 6.1 5.4 1.1.4 2 .6 2.6.8.9.3 1.7.2 2.3.1.7-.1 2.2-.9 2.5-1.7.3-.8.3-1.5.2-1.7-.1-.2-.3-.3-.6-.5z'/></svg>`
+                  };
+
+                  const ensureHttps = url => {
+                    const u = clean(url);
+                    if (!u) return '';
+                    if (/^https?:\/\//i.test(u)) return u;
+                    if (/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u)) return 'https://' + u;
+                    return u;
+                  };
+                  const mailto = v => `mailto:${clean(v)}`;
+                  const tel = v => `tel:${clean(v).replace(/[^\d+]/g,'')}`;
+                  const waLink = v => {
+                    const n = clean(v).replace(/[^\d+]/g,'');
+                    return n ? `https://wa.me/${n.replace(/^\+/, '')}` : '';
+                  };
+
+                  const rowHTML = (svg,label,inner) => `
+                    <div class='row'>
+                      ${svg}
+                      <div>
+                        <p class='label'>${label}</p>
+                        <p class='val'>${inner}</p>
+                      </div>
+                    </div>`;
+                  const socialIcon = (href, svg, label) =>
+                    href ? `<a href='${href}' target='_blank' rel='noopener' aria-label='${label}'>${svg}</a>` : '';
+
+                  function detectSocial(url){
+                    const u = ensureHttps(url);
+                    try{
+                      const d = new URL(u).hostname.replace(/^www\./,'').toLowerCase();
+                      if (d.includes('linkedin.')) return ['li', u];
+                      if (d.includes('instagram.'))return ['ig', u];
+                      if (d.includes('facebook.')) return ['fb', u];
+                      if (d.includes('tiktok.'))   return ['tt', u];
+                      if (d.includes('twitter.') || d === 'x.com') return ['x', u];
+                      if (d.includes('wa.me') || d.includes('whatsapp.')) return ['wa', u];
+                    }catch(_){}
+                    return [null, ''];
+                  }
+
+                  function parseCSV(text){
+                    const out = [];
+                    let i=0, field='', row=[], inQuotes=false;
+                    while(i<text.length){
+                      const c = text[i];
+                      if (inQuotes){
+                        if (c === '''){
+                          if (text[i+1] === '''){ field += '''; i+=2; continue; }
+                          inQuotes = false; i++; continue;
+                        }
+                        field += c; i++; continue;
+                      } else {
+                        if (c === '''){ inQuotes = true; i++; continue; }
+                        if (c === ','){ row.push(field); field=''; i++; continue; }
+                        if (c === '\r'){ i++; continue; }
+                        if (c === '\n'){ row.push(field); out.push(row); row=[]; field=''; i++; continue; }
+                        field += c; i++; continue;
+                      }
+                    }
+                    row.push(field); out.push(row);
+                    return out;
+                  }
+
+                  async function fetchGViz(){
+                    const res = await fetch(gvizUrl, {cache:'no-store'});
+                    const txt = await res.text();
+                    if (!res.ok) throw new Error(`GViz HTTP ${res.status}`);
+                    const a = txt.indexOf('setResponse('), b = txt.lastIndexOf(');');
+                    if (a === -1 || b === -1) throw new Error('GViz sin setResponse()');
+                    const data = JSON.parse(txt.substring(a + 'setResponse('.length, b));
+                    const rows = data?.table?.rows || [];
+                    return rows.map(r => [
+                      clean(r?.c?.[0]?.f ?? r?.c?.[0]?.v ?? ''),
+                      clean(r?.c?.[1]?.f ?? r?.c?.[1]?.v ?? '')
+                    ]);
+                  }
+
+                  async function fetchCSV(){
+                    const res = await fetch(csvUrl, {cache:'no-store'});
+                    const txt = await res.text();
+                    if (!res.ok) throw new Error(`CSV HTTP ${res.status}`);
+                    return parseCSV(txt).map(r => [clean(r[0]), clean(r[1])]);
+                  }
+
+                  function renderFromPairs(pairs){
+                    if (pairs.length && norm(pairs[0][0]).includes('campo') && norm(pairs[0][1]).includes('espan')) {
+                      pairs = pairs.slice(1);
+                    }
+                    const map = {};
+                    pairs.forEach(([k,v]) => { if (k||v) map[norm(k)] = v; });
+
+                    const nombre  = map[norm('Nombre de la empresa')] || '';
+                    const web     = ensureHttps(map[norm('Sitio web')] || '');
+                    const correo  = map[norm('Correo de contacto')] || '';
+                    const horario = map[norm('Horario de atención')] || map[norm('Horario de atencion')] || '';
+                    const whatsapp= map[norm('WhatsApp / Chat en vivo')] || '';
+
+                    const linkedin = ensureHttps(map[norm('LinkeIn')] || '');
+                    const facebook = ensureHttps(map[norm('Facebook')] || '');
+                    const instagram= ensureHttps(map[norm('Instagram')] || '');
+                    const tiktok   = ensureHttps(map[norm('TikTok')] || '');
+                    const x        = ensureHttps(map[norm('X')] || '');
+
+                    const socials = [];
+                    [linkedin, facebook, instagram, tiktok, x, waLink(whatsapp)].forEach(val => {
+                      if (!val) return;
+                      const [t, href] = detectSocial(val);
+                      if (t && href) socials.push([t, href]);
+                    });
+
+                    const parts = [];
+                    if (nombre) parts.push(`<h3 class='title'>${nombre}</h3>`);
+                    if (web)    parts.push(rowHTML(icons.globe, 'Sitio web', `<a href='${web}' target='_blank' rel='noopener'>${web.replace(/^https?:\/\//,'')}</a>`));
+                    if (correo) parts.push(rowHTML(icons.mail, 'E-mail', `<a href='${mailto(correo)}'>${correo}</a>`));
+                    if (whatsapp) parts.push(rowHTML(icons.phone, 'WhatsApp / Chat', `<a href='${waLink(whatsapp)}' target='_blank' rel='noopener'>${whatsapp}</a>`));
+                    if (horario) parts.push(rowHTML(icons.clock, 'Horario de atención', `${horario}`));
+                    if (socials.length){
+                      const s = socials.map(([t,href]) => {
+                        if (t==='li') return socialIcon(href, icons.li, 'LinkedIn');
+                        if (t==='fb') return socialIcon(href, icons.fb, 'Facebook');
+                        if (t==='ig') return socialIcon(href, icons.ig, 'Instagram');
+                        if (t==='tt') return socialIcon(href, icons.tt, 'TikTok');
+                        if (t==='x')  return socialIcon(href, icons.x,  'X');
+                        if (t==='wa') return socialIcon(href, icons.wa, 'WhatsApp');
+                        return '';
+                      }).join('');
+                      parts.push(`<div class='socials' aria-label='Redes sociales'>${s}</div>`);
+                    }
+
+                    $box().innerHTML = parts.join('\n');
+                  }
+
+                  async function loadAll(){
+                    $box().innerHTML = '';
+                    try{
+                      let pairs;
+                      try{
+                        pairs = await fetchGViz();
+                      }catch{
+                        pairs = await fetchCSV();
+                      }
+                      renderFromPairs(pairs);
+                    }catch{
+                      $box().innerHTML = `<div style='color:#ff8080'>No pude cargar la información de contacto.</div>`;
+                    }
+                  }
+
+                  if (document.readyState !== 'loading') loadAll();
+                  else document.addEventListener('DOMContentLoaded', loadAll, {once:true});
+                })();
+              </script>
+            </div>
+          </div>
+        </section>
+        <section
           id="social"
           data-nav-en="Social Media"
           data-nav-es="Redes Sociales"
           class="home-social-media"
         >
-          <div class="home-container23">
+          <div>
+            <div class="home-container40">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Social Media', es='Redes Sociales';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container41">
             <img
               alt="Engineering Solutions Logo"
               src="public/lbb_logo_hw.svg"
               class="home-image1"
             />
-            <div class="home-social-links">
-              <div class="home-container24">
-                <svg
-                  viewBox="0 0 877.7142857142857 1024"
-                  class="home-icon1 thq-icon-small"
-                >
-                  <path
-                    d="M713.143 73.143c90.857 0 164.571 73.714 164.571 164.571v548.571c0 90.857-73.714 164.571-164.571 164.571h-107.429v-340h113.714l17.143-132.571h-130.857v-84.571c0-38.286 10.286-64 65.714-64l69.714-0.571v-118.286c-12-1.714-53.714-5.143-101.714-5.143-101.143 0-170.857 61.714-170.857 174.857v97.714h-114.286v132.571h114.286v340h-304c-90.857 0-164.571-73.714-164.571-164.571v-548.571c0-90.857 73.714-164.571 164.571-164.571h548.571z"
-                  ></path></svg
-                ><svg
-                  viewBox="0 0 877.7142857142857 1024"
-                  class="home-icon3 thq-icon-small"
-                >
-                  <path
-                    d="M585.143 512c0-80.571-65.714-146.286-146.286-146.286s-146.286 65.714-146.286 146.286 65.714 146.286 146.286 146.286 146.286-65.714 146.286-146.286zM664 512c0 124.571-100.571 225.143-225.143 225.143s-225.143-100.571-225.143-225.143 100.571-225.143 225.143-225.143 225.143 100.571 225.143 225.143zM725.714 277.714c0 29.143-23.429 52.571-52.571 52.571s-52.571-23.429-52.571-52.571 23.429-52.571 52.571-52.571 52.571 23.429 52.571 52.571zM438.857 152c-64 0-201.143-5.143-258.857 17.714-20 8-34.857 17.714-50.286 33.143s-25.143 30.286-33.143 50.286c-22.857 57.714-17.714 194.857-17.714 258.857s-5.143 201.143 17.714 258.857c8 20 17.714 34.857 33.143 50.286s30.286 25.143 50.286 33.143c57.714 22.857 194.857 17.714 258.857 17.714s201.143 5.143 258.857-17.714c20-8 34.857-17.714 50.286-33.143s25.143-30.286 33.143-50.286c22.857-57.714 17.714-194.857 17.714-258.857s5.143-201.143-17.714-258.857c-8-20-17.714-34.857-33.143-50.286s-30.286-25.143-50.286-33.143c-57.714-22.857-194.857-17.714-258.857-17.714zM877.714 512c0 60.571 0.571 120.571-2.857 181.143-3.429 70.286-19.429 132.571-70.857 184s-113.714 67.429-184 70.857c-60.571 3.429-120.571 2.857-181.143 2.857s-120.571 0.571-181.143-2.857c-70.286-3.429-132.571-19.429-184-70.857s-67.429-113.714-70.857-184c-3.429-60.571-2.857-120.571-2.857-181.143s-0.571-120.571 2.857-181.143c3.429-70.286 19.429-132.571 70.857-184s113.714-67.429 184-70.857c60.571-3.429 120.571-2.857 181.143-2.857s120.571-0.571 181.143 2.857c70.286 3.429 132.571 19.429 184 70.857s67.429 113.714 70.857 184c3.429 60.571 2.857 120.571 2.857 181.143z"
-                  ></path></svg
-                ><svg
-                  viewBox="0 0 877.7142857142857 1024"
-                  class="home-icon5 thq-icon-small"
-                >
-                  <path
-                    d="M135.429 808h132v-396.571h-132v396.571zM276 289.143c-0.571-38.857-28.571-68.571-73.714-68.571s-74.857 29.714-74.857 68.571c0 37.714 28.571 68.571 73.143 68.571h0.571c46.286 0 74.857-30.857 74.857-68.571zM610.286 808h132v-227.429c0-121.714-65.143-178.286-152-178.286-70.857 0-102.286 39.429-119.429 66.857h1.143v-57.714h-132s1.714 37.143 0 396.571v0h132v-221.714c0-11.429 0.571-23.429 4-32 9.714-23.429 31.429-48 68-48 47.429 0 66.286 36 66.286 89.714v212zM877.714 237.714v548.571c0 90.857-73.714 164.571-164.571 164.571h-548.571c-90.857 0-164.571-73.714-164.571-164.571v-548.571c0-90.857 73.714-164.571 164.571-164.571h548.571c90.857 0 164.571 73.714 164.571 164.571z"
-                  ></path></svg
-                ><svg viewBox="0 0 1024 1024" class="home-icon7 thq-icon-small">
-                  <path
-                    d="M406.286 644.571l276.571-142.857-276.571-144.571v287.429zM512 152c215.429 0 358.286 10.286 358.286 10.286 20 2.286 64 2.286 102.857 43.429 0 0 31.429 30.857 40.571 101.714 10.857 82.857 10.286 165.714 10.286 165.714v77.714s0.571 82.857-10.286 165.714c-9.143 70.286-40.571 101.714-40.571 101.714-38.857 40.571-82.857 40.571-102.857 42.857 0 0-142.857 10.857-358.286 10.857v0c-266.286-2.286-348-10.286-348-10.286-22.857-4-74.286-2.857-113.143-43.429 0 0-31.429-31.429-40.571-101.714-10.857-82.857-10.286-165.714-10.286-165.714v-77.714s-0.571-82.857 10.286-165.714c9.143-70.857 40.571-101.714 40.571-101.714 38.857-41.143 82.857-41.143 102.857-43.429 0 0 142.857-10.286 358.286-10.286v0z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
+            <div class="home-logo"></div>
           </div>
         </section>
       </div>
