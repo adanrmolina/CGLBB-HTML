@@ -37,8 +37,8 @@
  
 .home-container11 {
   top: 20px;
-  right: 150px;
-  width: 160px;
+  right: 160px;
+  width: 150px;
   height: 35px;
   position: fixed;
 }
@@ -218,7 +218,8 @@
   }
   .home-container11 {
     top: 20px;
-    width: 164px;
+    right: 90px;
+    width: 150px;
   }
   .home-container13 {
     top: 20px;
@@ -265,8 +266,8 @@
 @media(max-width: 767px) {
   .home-container11 {
     top: 20px;
-    right: 120px;
-    width: 160px;
+    right: 90px;
+    width: 150px;
     height: 35px;
   }
   .home-container13 {
@@ -303,7 +304,7 @@
   .home-container11 {
     top: 20px;
     right: 90px;
-    width: 160px;
+    width: 150px;
     height: 35px;
     position: fixed;
   }
