@@ -38,7 +38,7 @@
 .home-container11 {
   top: 20px;
   right: 150px;
-  width: 164px;
+  width: 160px;
   height: 35px;
   position: fixed;
 }
@@ -50,6 +50,7 @@
 .home-container13 {
   top: 20px;
   right: 60px;
+  width: 60px;
   height: 35px;
   position: fixed;
 }
@@ -222,6 +223,7 @@
   .home-container13 {
     top: 20px;
     right: 10px;
+    width: 60px;
     height: 35px;
     position: fixed;
   }
@@ -264,11 +266,12 @@
   .home-container11 {
     top: 20px;
     right: 120px;
-    width: 164px;
-    height: 38px;
+    width: 160px;
+    height: 35px;
   }
   .home-container13 {
     top: 20px;
+    width: 60px;
     height: 35px;
   }
   .home-header-container {
@@ -300,14 +303,14 @@
   .home-container11 {
     top: 20px;
     right: 90px;
-    width: 166px;
-    height: 36px;
+    width: 160px;
+    height: 35px;
     position: fixed;
   }
   .home-container13 {
     top: 20px;
     right: 10px;
-    width: auto;
+    width: 60px;
     height: 35px;
     position: fixed;
     padding-top: 0px;
