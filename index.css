@@ -224,7 +224,7 @@
   }
   .home-container11 {
     top: 20px;
-    right: 20px;
+    right: 40px;
     width: 125px;
   }
   .home-container13 {
@@ -275,7 +275,7 @@
   }
   .home-container11 {
     top: 20px;
-    right: 20px;
+    right: 40px;
     width: 125px;
     height: 35px;
   }
@@ -315,7 +315,7 @@
     padding-top: var(--dl-layout-space-unit);
   }
   .home-container11 {
-    right: 20px;
+    right: 40px;
     width: 120px;
     height: 38px;
     position: fixed;
