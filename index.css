@@ -220,11 +220,7 @@
   justify-content: center;
 }
  
-.home-container40 {
-  display: contents;
-}
- 
-.home-container41 {
+.home-container39 {
   width: 100vh;
   display: flex;
   align-items: center;
@@ -276,7 +272,7 @@
   .home-container37 {
     width: 100vh;
   }
-  .home-container41 {
+  .home-container39 {
     width: 60%;
   }
   .home-image1 {
