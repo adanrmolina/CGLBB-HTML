@@ -19,10 +19,6 @@
   justify-content: flex-start;
 }
  
-.home-container12 {
-  display: contents;
-}
- 
 .home-navbar {
   width: 100%;
   height: 94px;
@@ -39,23 +35,23 @@
   object-fit: cover;
 }
  
-.home-container13 {
+.home-container11 {
   right: 150px;
   width: 164px;
   height: 35px;
   position: fixed;
 }
  
-.home-container14 {
+.home-container12 {
   display: contents;
 }
  
-.home-container15 {
+.home-container13 {
   right: 60px;
   position: fixed;
 }
  
-.home-container16 {
+.home-container14 {
   display: contents;
 }
  
@@ -90,11 +86,11 @@
   justify-content: center;
 }
  
-.home-container17 {
+.home-container15 {
   width: 100%;
 }
  
-.home-container18 {
+.home-container16 {
   display: contents;
 }
  
@@ -106,17 +102,13 @@
   justify-content: flex-start;
 }
  
-.home-container20 {
-  display: contents;
-}
- 
-.home-container21 {
+.home-container17 {
   width: 100%;
   align-self: normal;
   font-style: normal;
 }
  
-.home-container22 {
+.home-container18 {
   display: contents;
 }
  
@@ -129,16 +121,12 @@
   justify-content: center;
 }
  
-.home-container24 {
-  display: contents;
-}
- 
-.home-container25 {
+.home-container19 {
   width: 100%;
   height: 100%;
 }
  
-.home-container26 {
+.home-container20 {
   display: contents;
 }
  
@@ -150,15 +138,11 @@
   justify-content: flex-start;
 }
  
-.home-container28 {
-  display: contents;
-}
- 
-.home-container29 {
+.home-container21 {
   width: 100%;
 }
  
-.home-container30 {
+.home-container22 {
   display: contents;
 }
  
@@ -170,15 +154,11 @@
   justify-content: flex-start;
 }
  
-.home-container32 {
-  display: contents;
-}
- 
-.home-container33 {
+.home-container23 {
   width: 100%;
 }
  
-.home-container34 {
+.home-container24 {
   display: contents;
 }
  
@@ -190,17 +170,7 @@
   justify-content: center;
 }
  
-.home-container35 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
- 
-.home-container36 {
-  display: contents;
-}
- 
-.home-container37 {
+.home-container25 {
   width: 100%;
   display: flex;
   align-self: flex-start;
@@ -208,7 +178,7 @@
   justify-content: center;
 }
  
-.home-container38 {
+.home-container26 {
   display: contents;
 }
  
@@ -220,7 +190,7 @@
   justify-content: center;
 }
  
-.home-container39 {
+.home-container27 {
   width: 100vh;
   display: flex;
   align-items: center;
@@ -242,10 +212,10 @@
   .home-home {
     padding-left: var(--dl-layout-space-oneandhalfunits);
   }
-  .home-container13 {
+  .home-container11 {
     width: 164px;
   }
-  .home-container15 {
+  .home-container13 {
     top: 28px;
     right: 10px;
     position: fixed;
@@ -256,23 +226,23 @@
   .home-header-container {
     width: 100%;
   }
-  .home-container17 {
+  .home-container15 {
     width: 100%;
   }
   .home-content {
     width: 100%;
     align-self: flex-start;
   }
-  .home-container21 {
+  .home-container17 {
     align-self: flex-start;
+  }
+  .home-container19 {
+    width: 100vh;
   }
   .home-container25 {
     width: 100vh;
   }
-  .home-container37 {
-    width: 100vh;
-  }
-  .home-container39 {
+  .home-container27 {
     width: 60%;
   }
   .home-image1 {
@@ -286,27 +256,27 @@
 }
  
 @media(max-width: 767px) {
-  .home-container13 {
+  .home-container11 {
     width: 164px;
     height: 38px;
   }
   .home-header-container {
     width: 100%;
   }
-  .home-container17 {
+  .home-container15 {
     width: 100%;
   }
   .home-content {
     width: 100%;
   }
-  .home-container21 {
+  .home-container17 {
     width: 100%;
     align-self: flex-start;
   }
-  .home-container25 {
+  .home-container19 {
     width: 681px;
   }
-  .home-container37 {
+  .home-container25 {
     width: 681px;
   }
 }
@@ -316,13 +286,13 @@
     width: 160px;
     padding-top: var(--dl-layout-space-unit);
   }
-  .home-container13 {
+  .home-container11 {
     right: 80px;
     width: 164px;
     height: 36px;
     position: static;
   }
-  .home-container15 {
+  .home-container13 {
     top: 0px;
     right: 10px;
     bottom: 0px;
@@ -337,14 +307,14 @@
   .home-content {
     flex: 0 0 auto;
   }
-  .home-container21 {
+  .home-container17 {
     flex: 0 0 auto;
   }
-  .home-container25 {
+  .home-container19 {
     width: 478px;
     padding-bottom: 0px;
   }
-  .home-container37 {
+  .home-container25 {
     width: 478px;
     padding-bottom: 0px;
   }
