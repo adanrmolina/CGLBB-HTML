@@ -99,7 +99,7 @@
                     style="
       all: unset;
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 40px; height: 32px; padding: 0 10px;
+      min-width: 120px; height: 32px; padding: 0 10px;
       border: 1px solid rgba(255,255,255,.35);
       background: rgba(255,255,255,.10);
       color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -1691,6 +1691,10 @@
                 style="width:100%;max-width:560px;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif"
               >
                 <div class="contact-inner"></div>
+                <pre
+                  id="contact-debug"
+                  style="background:rgba(255,255,255,.08);padding:8px;margin-top:12px;border-radius:6px;max-height:200px;overflow:auto;font-size:12px;line-height:1.35"
+                ></pre>
               </section>
 
               <style>
@@ -1761,13 +1765,14 @@
 
               <script>
                   (() => {
+                  // === TU HOJA ===
                   const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const SHEET_GID = '491949069';
-                  const tq = encodeURIComponent('select A,B where A is not null and B is not null offset 1');
-                  const gvizUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}&tq=${tq}&cb=${Date.now()}`;
-                  const csvUrl  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+                  // ¡OJO!: rango explícito grande para no cortar en filas en blanco
+                  const RANGE     = 'A1:B200';
 
-                  const $box = () => document.querySelector('#contact-card .contact-inner');
+                  const params  = new URLSearchParams({ tqx:'out:json', gid:SHEET_GID, range:RANGE });
+                  const jsonUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params.toString()}&cb=${Date.now()}`;
 
                   const clean = s => (s||'').toString().replace(/[\u00A0\u202F\u2007]/g,' ').trim();
                   const norm  = s => clean(s).toLowerCase()
@@ -1810,6 +1815,7 @@
                         <p class='val'>${inner}</p>
                       </div>
                     </div>`;
+
                   const socialIcon = (href, svg, label) =>
                     href ? `<a href='${href}' target='_blank' rel='noopener' aria-label='${label}'>${svg}</a>` : '';
 
@@ -1827,82 +1833,50 @@
                     return [null, ''];
                   }
 
-                  function parseCSV(text){
-                    const out = [];
-                    let i=0, field='', row=[], inQuotes=false;
-                    while(i<text.length){
-                      const c = text[i];
-                      if (inQuotes){
-                        if (c === '''){
-                          if (text[i+1] === '''){ field += '''; i+=2; continue; }
-                          inQuotes = false; i++; continue;
-                        }
-                        field += c; i++; continue;
-                      } else {
-                        if (c === '''){ inQuotes = true; i++; continue; }
-                        if (c === ','){ row.push(field); field=''; i++; continue; }
-                        if (c === '\r'){ i++; continue; }
-                        if (c === '\n'){ row.push(field); out.push(row); row=[]; field=''; i++; continue; }
-                        field += c; i++; continue;
-                      }
-                    }
-                    row.push(field); out.push(row);
-                    return out;
-                  }
+                  function render(pairs){
+                    const box = document.querySelector('#contact-card .contact-inner');
+                    const dbg = document.getElementById('contact-debug');
+                    if (!box || !dbg) return;
 
-                  async function fetchGViz(){
-                    const res = await fetch(gvizUrl, {cache:'no-store'});
-                    const txt = await res.text();
-                    if (!res.ok) throw new Error(`GViz HTTP ${res.status}`);
-                    const a = txt.indexOf('setResponse('), b = txt.lastIndexOf(');');
-                    if (a === -1 || b === -1) throw new Error('GViz sin setResponse()');
-                    const data = JSON.parse(txt.substring(a + 'setResponse('.length, b));
-                    const rows = data?.table?.rows || [];
-                    return rows.map(r => [
-                      clean(r?.c?.[0]?.f ?? r?.c?.[0]?.v ?? ''),
-                      clean(r?.c?.[1]?.f ?? r?.c?.[1]?.v ?? '')
-                    ]);
-                  }
-
-                  async function fetchCSV(){
-                    const res = await fetch(csvUrl, {cache:'no-store'});
-                    const txt = await res.text();
-                    if (!res.ok) throw new Error(`CSV HTTP ${res.status}`);
-                    return parseCSV(txt).map(r => [clean(r[0]), clean(r[1])]);
-                  }
-
-                  function renderFromPairs(pairs){
-                    if (pairs.length && norm(pairs[0][0]).includes('campo') && norm(pairs[0][1]).includes('espan')) {
-                      pairs = pairs.slice(1);
-                    }
+                    // Mapa por clave normalizada (pero no dependemos de esto para redes)
                     const map = {};
-                    pairs.forEach(([k,v]) => { if (k||v) map[norm(k)] = v; });
+                    pairs.forEach(({k,v}) => { if (k || v) map[norm(k)] = v; });
 
-                    const nombre  = map[norm('Nombre de la empresa')] || '';
-                    const web     = ensureHttps(map[norm('Sitio web')] || '');
-                    const correo  = map[norm('Correo de contacto')] || '';
-                    const horario = map[norm('Horario de atención')] || map[norm('Horario de atencion')] || '';
-                    const whatsapp= map[norm('WhatsApp / Chat en vivo')] || '';
+                    const nameKey = Object.keys(map).find(k => k.includes('empresa') || k.includes('compania') || k.includes('compania'));
+                    const webKey  = Object.keys(map).find(k => k.includes('sitio') || k.includes('web') || k.includes('pagina') || k.includes('pagin'));
+                    const mailKey = Object.keys(map).find(k => k.includes('correo') || k.includes('email') || k.includes('e-mail') || k.includes('mail'));
+                    const horaKey = Object.keys(map).find(k => k.includes('horario'));
 
-                    const linkedin = ensureHttps(map[norm('LinkeIn')] || '');
-                    const facebook = ensureHttps(map[norm('Facebook')] || '');
-                    const instagram= ensureHttps(map[norm('Instagram')] || '');
-                    const tiktok   = ensureHttps(map[norm('TikTok')] || '');
-                    const x        = ensureHttps(map[norm('X')] || '');
+                    const nombre  = nameKey ? map[nameKey] : '';
+                    const web     = webKey  ? ensureHttps(map[webKey]) : '';
+                    const correo  = mailKey ? map[mailKey] : '';
+                    const horario = horaKey ? map[horaKey] : '';
 
+                    // Tel / WhatsApp por texto en clave o por patrón en valor
+                    const waKey   = Object.keys(map).find(k => k.includes('whatsapp'));
+                    const telKey  = Object.keys(map).find(k => k.includes('tel'));
+                    const whats   = waKey ? map[waKey] : '';
+                    const telefono= telKey ? map[telKey] : '';
+
+                    // Redes: clasifica por dominio en el VALOR (no importa el título)
                     const socials = [];
-                    [linkedin, facebook, instagram, tiktok, x, waLink(whatsapp)].forEach(val => {
+                    pairs.forEach(({v}) => {
+                      const val = clean(v);
                       if (!val) return;
-                      const [t, href] = detectSocial(val);
-                      if (t && href) socials.push([t, href]);
+                      const isLink = /^https?:\/\//i.test(val) || /^[\w.-]+\.[a-z]{2,}/i.test(val);
+                      if (!isLink) return;
+                      const [type, href] = detectSocial(val);
+                      if (type && href) socials.push([type, href]);
                     });
 
                     const parts = [];
                     if (nombre) parts.push(`<h3 class='title'>${nombre}</h3>`);
                     if (web)    parts.push(rowHTML(icons.globe, 'Sitio web', `<a href='${web}' target='_blank' rel='noopener'>${web.replace(/^https?:\/\//,'')}</a>`));
                     if (correo) parts.push(rowHTML(icons.mail, 'E-mail', `<a href='${mailto(correo)}'>${correo}</a>`));
-                    if (whatsapp) parts.push(rowHTML(icons.phone, 'WhatsApp / Chat', `<a href='${waLink(whatsapp)}' target='_blank' rel='noopener'>${whatsapp}</a>`));
-                    if (horario) parts.push(rowHTML(icons.clock, 'Horario de atención', `${horario}`));
+                    if (whats)  parts.push(rowHTML(icons.phone, 'WhatsApp / Chat', `<a href='${waLink(whats)}' target='_blank' rel='noopener'>${whats}</a>`));
+                    else if (telefono) parts.push(rowHTML(icons.phone, 'Teléfono', `<a href='${tel(telefono)}'>${telefono}</a>`));
+                    if (horario)parts.push(rowHTML(icons.clock, 'Horario de atención', `${horario}`));
+
                     if (socials.length){
                       const s = socials.map(([t,href]) => {
                         if (t==='li') return socialIcon(href, icons.li, 'LinkedIn');
@@ -1916,26 +1890,50 @@
                       parts.push(`<div class='socials' aria-label='Redes sociales'>${s}</div>`);
                     }
 
-                    $box().innerHTML = parts.join('\n');
+                    // Render
+                    box.innerHTML = parts.join('\n');
+
+                    // DEBUG SIEMPRE: cuenta y lista lo que llegó (así verificamos que ya no se corta en 3)
+                    const lines = pairs.map((p,i) => `${String(i+1).padStart(2,'0')}. ${p.k}  =>  ${p.v}`).join('\n');
+                    dbg.textContent = `Filas recibidas: ${pairs.length}\n${lines}`;
+                    console.log('GViz pairs:', pairs);
                   }
 
-                  async function loadAll(){
-                    $box().innerHTML = '';
+                  async function loadSheet(){
+                    const box = document.querySelector('#contact-card .contact-inner');
+                    const dbg = document.getElementById('contact-debug');
+                    if (box) box.innerHTML = '';
+                    if (dbg) { dbg.textContent='Cargando…'; }
                     try{
-                      let pairs;
-                      try{
-                        pairs = await fetchGViz();
-                      }catch{
-                        pairs = await fetchCSV();
-                      }
-                      renderFromPairs(pairs);
-                    }catch{
-                      $box().innerHTML = `<div style='color:#ff8080'>No pude cargar la información de contacto.</div>`;
+                      const res = await fetch(jsonUrl, {cache:'no-store'});
+                      const txt = await res.text();
+                      const a = txt.indexOf('setResponse('), b = txt.lastIndexOf(');');
+                      if (a === -1 || b === -1) throw new Error('Formato GViz inesperado');
+                      const data = JSON.parse(txt.substring(a + 'setResponse('.length, b));
+                      let rows = data?.table?.rows || [];
+                      if (!rows.length) throw new Error('Hoja vacía');
+
+                      // NO elimino filas vacías intermedias; solo filtro filas totalmente vacías
+                      const pairs = rows.map(r => ({
+                        k: clean(r?.c?.[0]?.f ?? r?.c?.[0]?.v ?? ''),
+                        v: clean(r?.c?.[1]?.f ?? r?.c?.[1]?.v ?? '')
+                      })).filter(p => (p.k !== '' || p.v !== ''));
+
+                      // Si la primera línea parece encabezado 'Campo | Español', se descarta solo esa
+                      if (pairs.length && norm(pairs[0].k).includes('campo') && norm(pairs[0].v).includes('espan'))
+                        pairs.shift();
+
+                      render(pairs);
+                    } catch(e){
+                      console.error(e);
+                      if (box) box.innerHTML = `<div style='color:#ff8080'>No pude cargar la información de contacto.</div>`;
+                      const dbg = document.getElementById('contact-debug');
+                      if (dbg) dbg.textContent = 'ERROR: ' + (e && e.message || e);
                     }
                   }
 
-                  if (document.readyState !== 'loading') loadAll();
-                  else document.addEventListener('DOMContentLoaded', loadAll, {once:true});
+                  if (document.readyState !== 'loading') loadSheet();
+                  else document.addEventListener('DOMContentLoaded', loadSheet, {once:true});
                 })();
               </script>
             </div>
