@@ -185,7 +185,6 @@
 .home-comtact {
   flex: 0 0 auto;
   width: 100%;
-  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -196,8 +195,8 @@
 }
  
 .home-container37 {
-  width: 630px;
-  height: 336px;
+  width: 100%;
+  align-self: flex-start;
 }
  
 .home-container38 {
