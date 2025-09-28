@@ -1668,7 +1668,7 @@
           data-nav-es="Contacto"
           class="home-comtact"
         >
-          <div>
+          <div class="home-container35">
             <div class="home-container36">
               <script>
                 (function(){
@@ -1691,10 +1691,6 @@
                 style="width:100%;max-width:560px;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif"
               >
                 <div class="contact-inner"></div>
-                <pre
-                  id="contact-debug"
-                  style="background:rgba(255,255,255,.08);padding:8px;margin-top:12px;border-radius:6px;max-height:200px;overflow:auto;font-size:12px;line-height:1.35"
-                ></pre>
               </section>
 
               <style>
@@ -1768,7 +1764,6 @@
                   // === TU HOJA ===
                   const SHEET_ID  = '14Z6jZrF9j9J08PQFLHTJL2PuEnQ62HCE0pGJ80gqaeQ';
                   const SHEET_GID = '491949069';
-                  // ¡OJO!: rango explícito grande para no cortar en filas en blanco
                   const RANGE     = 'A1:B200';
 
                   const params  = new URLSearchParams({ tqx:'out:json', gid:SHEET_GID, range:RANGE });
@@ -1815,7 +1810,6 @@
                         <p class='val'>${inner}</p>
                       </div>
                     </div>`;
-
                   const socialIcon = (href, svg, label) =>
                     href ? `<a href='${href}' target='_blank' rel='noopener' aria-label='${label}'>${svg}</a>` : '';
 
@@ -1835,14 +1829,12 @@
 
                   function render(pairs){
                     const box = document.querySelector('#contact-card .contact-inner');
-                    const dbg = document.getElementById('contact-debug');
-                    if (!box || !dbg) return;
+                    if (!box) return;
 
-                    // Mapa por clave normalizada (pero no dependemos de esto para redes)
                     const map = {};
                     pairs.forEach(({k,v}) => { if (k || v) map[norm(k)] = v; });
 
-                    const nameKey = Object.keys(map).find(k => k.includes('empresa') || k.includes('compania') || k.includes('compania'));
+                    const nameKey = Object.keys(map).find(k => k.includes('empresa') || k.includes('compania'));
                     const webKey  = Object.keys(map).find(k => k.includes('sitio') || k.includes('web') || k.includes('pagina') || k.includes('pagin'));
                     const mailKey = Object.keys(map).find(k => k.includes('correo') || k.includes('email') || k.includes('e-mail') || k.includes('mail'));
                     const horaKey = Object.keys(map).find(k => k.includes('horario'));
@@ -1852,13 +1844,11 @@
                     const correo  = mailKey ? map[mailKey] : '';
                     const horario = horaKey ? map[horaKey] : '';
 
-                    // Tel / WhatsApp por texto en clave o por patrón en valor
                     const waKey   = Object.keys(map).find(k => k.includes('whatsapp'));
                     const telKey  = Object.keys(map).find(k => k.includes('tel'));
                     const whats   = waKey ? map[waKey] : '';
                     const telefono= telKey ? map[telKey] : '';
 
-                    // Redes: clasifica por dominio en el VALOR (no importa el título)
                     const socials = [];
                     pairs.forEach(({v}) => {
                       const val = clean(v);
@@ -1890,20 +1880,12 @@
                       parts.push(`<div class='socials' aria-label='Redes sociales'>${s}</div>`);
                     }
 
-                    // Render
                     box.innerHTML = parts.join('\n');
-
-                    // DEBUG SIEMPRE: cuenta y lista lo que llegó (así verificamos que ya no se corta en 3)
-                    const lines = pairs.map((p,i) => `${String(i+1).padStart(2,'0')}. ${p.k}  =>  ${p.v}`).join('\n');
-                    dbg.textContent = `Filas recibidas: ${pairs.length}\n${lines}`;
-                    console.log('GViz pairs:', pairs);
                   }
 
                   async function loadSheet(){
                     const box = document.querySelector('#contact-card .contact-inner');
-                    const dbg = document.getElementById('contact-debug');
                     if (box) box.innerHTML = '';
-                    if (dbg) { dbg.textContent='Cargando…'; }
                     try{
                       const res = await fetch(jsonUrl, {cache:'no-store'});
                       const txt = await res.text();
@@ -1913,13 +1895,11 @@
                       let rows = data?.table?.rows || [];
                       if (!rows.length) throw new Error('Hoja vacía');
 
-                      // NO elimino filas vacías intermedias; solo filtro filas totalmente vacías
                       const pairs = rows.map(r => ({
                         k: clean(r?.c?.[0]?.f ?? r?.c?.[0]?.v ?? ''),
                         v: clean(r?.c?.[1]?.f ?? r?.c?.[1]?.v ?? '')
                       })).filter(p => (p.k !== '' || p.v !== ''));
 
-                      // Si la primera línea parece encabezado 'Campo | Español', se descarta solo esa
                       if (pairs.length && norm(pairs[0].k).includes('campo') && norm(pairs[0].v).includes('espan'))
                         pairs.shift();
 
@@ -1927,8 +1907,6 @@
                     } catch(e){
                       console.error(e);
                       if (box) box.innerHTML = `<div style='color:#ff8080'>No pude cargar la información de contacto.</div>`;
-                      const dbg = document.getElementById('contact-debug');
-                      if (dbg) dbg.textContent = 'ERROR: ' + (e && e.message || e);
                     }
                   }
 

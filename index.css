@@ -190,13 +190,22 @@
   justify-content: center;
 }
  
+.home-container35 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
 .home-container36 {
   display: contents;
 }
  
 .home-container37 {
   width: 100%;
+  display: flex;
   align-self: flex-start;
+  align-items: center;
+  justify-content: center;
 }
  
 .home-container38 {
