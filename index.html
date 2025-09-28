@@ -74,23 +74,26 @@
             />
             <div class="home-container11">
               <div class="home-container12">
-                <!-- 🔘 Botón “Ir a la siguiente sección” (manual con tus IDs) -->
-                <div id="section-next-teleport" style="display:inline-block">
+                <!-- 🔘 Botón “Ir a la siguiente sección” (fijo a la derecha, crece hacia la izquierda) -->
+                <div
+                  id="section-next-teleport"
+                  style="display:inline-flex; justify-content:flex-end; width:100%;"
+                >
                   <button
                     id="section-next-btn"
                     aria-label="Navegar a la siguiente sección"
                     title="Navegar a la siguiente sección"
                     style="
-    all: unset;
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 120px; height: 32px; padding: 0 12px;
-    border: 1px solid rgba(255,255,255,.35);
-    background: rgba(255,255,255,.10);
-    color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    letter-spacing: .2px; border-radius: 8px; cursor: pointer;
-    white-space: nowrap; user-select: none; -webkit-tap-highlight-color: transparent;
-    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-    transition: transform .08s ease;"
+      all: unset;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 0; height: 32px; padding: 0 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.10);
+      color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      letter-spacing: .2px; border-radius: 8px; cursor: pointer;
+      white-space: nowrap; user-select: none; -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      transition: transform .08s ease;"
                   >
                     Ir a: —
                   </button>
@@ -104,19 +107,20 @@
                       transform: translateY(1px);
                     }
 
-                    /* Fijarlo en pantalla (opcional): */
-                    /* #section-next-teleport{ position: fixed; right: 16px; bottom: 64px; z-index: 9999; } */
+                    /* (Opcional) Fijarlo en la esquina inferior derecha */
+                    /* #section-next-teleport{
+                         position: fixed; right: 16px; bottom: 64px; z-index: 9999;
+                       } */
                   </style>
 
                   <script>
-                      (function(){
-                      // ====== EDITA si tienes header fijo (altura en px) ======
+                    (function(){
+                      // ====== Ajusta si tu header fijo tiene otra altura ======
                       const HEADER_OFFSET_PX = 80;
 
-                      // ====== TUS SECCIONES (en orden) ======
+                      // ====== Secciones en orden ======
                       const SECTIONS = ['#home','#content','#stats','#cases','#faq','#social'];
 
-                      // (Opcional) títulos por idioma; si no quieres tocar, usa los que dejo.
                       const TITLES_ES = {
                         '#home':'Inicio', '#content':'Contenido', '#stats':'Estadísticas',
                         '#cases':'Casos', '#faq':'FAQ', '#social':'Social'
@@ -126,7 +130,6 @@
                         '#cases':'Cases', '#faq':'FAQ', '#social':'Social'
                       };
 
-                      // Detecta idioma (usa tu toggle si existe; si no, ES por navegador)
                       function getLang(){
                         try{
                           const d = (document.documentElement.dataset||{}).lang;
@@ -148,7 +151,6 @@
                       function q(sel){ return document.querySelector(sel); }
                       function topOf(el){ const r=el.getBoundingClientRect(); return r.top+window.scrollY; }
 
-                      // Resuelve secciones y les asigna título
                       function resolveSections(){
                         const lang=getLang();
                         const map = (lang==='EN') ? TITLES_EN : TITLES_ES;
@@ -166,7 +168,10 @@
 
                       function setNextLabel(){
                         const lang=getLang();
-                        if(!sections.length){ btn.textContent=(lang==='ES'?'Configura IDs':'Configure IDs'); btn.disabled=true; return; }
+                        if(!sections.length){
+                          btn.textContent=(lang==='ES'?'Configura IDs':'Configure IDs');
+                          btn.disabled=true; return;
+                        }
                         btn.disabled=false;
                         const next=sections[(idx+1)%sections.length];
                         btn.textContent=(lang==='ES'?'Ir a: ':'Go to: ')+next.title;
@@ -195,11 +200,10 @@
                       btn.addEventListener('click', goNext);
                       window.addEventListener('scroll', ()=>{ clearTimeout(window.__secnav_t); window.__secnav_t=setTimeout(updateIndexByScroll,80); });
                       window.addEventListener('resize', updateIndexByScroll);
-                      window.addEventListener('languagechange', init); // si cambias EN/ES, se actualiza
+                      window.addEventListener('languagechange', init);
 
                       function init(){
                         sections=resolveSections();
-                        // Aviso rápido si falta alguna
                         const missing=SECTIONS.filter(sel=>!document.querySelector(sel));
                         if(missing.length){
                           console.warn('No se encontraron estas secciones:', missing);
