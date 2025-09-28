@@ -41,7 +41,7 @@
  
 .home-container13 {
   right: 150px;
-  width: 144px;
+  width: 164px;
   height: 35px;
   position: fixed;
 }
@@ -247,7 +247,7 @@
     padding-left: var(--dl-layout-space-oneandhalfunits);
   }
   .home-container13 {
-    width: 144px;
+    width: 164px;
   }
   .home-container15 {
     top: 28px;
@@ -291,7 +291,7 @@
  
 @media(max-width: 767px) {
   .home-container13 {
-    width: 144px;
+    width: 164px;
     height: 38px;
   }
   .home-header-container {
@@ -322,7 +322,7 @@
   }
   .home-container13 {
     right: 80px;
-    width: 144px;
+    width: 164px;
     height: 36px;
     position: static;
   }
