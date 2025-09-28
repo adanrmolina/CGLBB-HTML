@@ -74,7 +74,7 @@
             />
             <div class="home-container11">
               <div class="home-container12">
-                <!-- 🔘 Botón “Ir a la siguiente sección” (fijo a la derecha, crece hacia la izquierda) -->
+                <!-- 🔘 Botón “Ir a la siguiente sección” (fijo a la derecha, crece hacia la izquierda y nunca corta texto) -->
                 <div
                   id="section-next-teleport"
                   style="display:inline-flex; justify-content:flex-end; width:100%;"
@@ -86,12 +86,15 @@
                     style="
       all: unset;
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 0; height: 32px; padding: 0 12px;
+      min-width: 140px;            /* ancho base, ajusta a gusto */
+      max-width: none;             /* sin límite: puede crecer todo lo necesario */
+      height: 32px; padding: 0 16px;
       border: 1px solid rgba(255,255,255,.35);
       background: rgba(255,255,255,.10);
       color: #fff; font: 600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       letter-spacing: .2px; border-radius: 8px; cursor: pointer;
-      white-space: nowrap; user-select: none; -webkit-tap-highlight-color: transparent;
+      white-space: nowrap; overflow: visible;   /* evita recorte o salto de línea */
+      user-select: none; -webkit-tap-highlight-color: transparent;
       -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
       transition: transform .08s ease;"
                   >
@@ -107,7 +110,7 @@
                       transform: translateY(1px);
                     }
 
-                    /* (Opcional) Fijarlo en la esquina inferior derecha */
+                    /* (Opcional) Fijarlo en la esquina inferior derecha de la pantalla */
                     /* #section-next-teleport{
                          position: fixed; right: 16px; bottom: 64px; z-index: 9999;
                        } */
@@ -115,10 +118,7 @@
 
                   <script>
                     (function(){
-                      // ====== Ajusta si tu header fijo tiene otra altura ======
-                      const HEADER_OFFSET_PX = 80;
-
-                      // ====== Secciones en orden ======
+                      const HEADER_OFFSET_PX = 80;  // ajusta si tu header fijo tiene otra altura
                       const SECTIONS = ['#home','#content','#stats','#cases','#faq','#social'];
 
                       const TITLES_ES = {
