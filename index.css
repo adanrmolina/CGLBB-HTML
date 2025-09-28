@@ -288,16 +288,15 @@
   }
   .home-container11 {
     right: 80px;
-    width: 164px;
+    width: 166px;
     height: 36px;
-    position: static;
+    position: fixed;
   }
   .home-container13 {
-    top: 0px;
-    right: 10px;
-    bottom: 0px;
+    top: 27px;
+    right: 11px;
     height: 35px;
-    position: static;
+    position: fixed;
     padding-top: 0px;
   }
   .home-hero-content {
