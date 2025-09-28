@@ -224,12 +224,12 @@
   }
   .home-container11 {
     top: 20px;
-    right: 15px;
+    right: 10px;
     width: 125px;
   }
   .home-container13 {
     top: 65px;
-    right: 15px;
+    right: 10px;
     width: 60px;
     height: 35px;
     position: fixed;
@@ -275,12 +275,13 @@
   }
   .home-container11 {
     top: 20px;
-    right: 15px;
+    right: 10px;
     width: 125px;
     height: 35px;
   }
   .home-container13 {
     top: 65px;
+    right: 10px;
     width: 60px;
     height: 35px;
   }
@@ -314,16 +315,14 @@
     padding-top: var(--dl-layout-space-unit);
   }
   .home-container11 {
-    top: 20px;
-    right: 15px;
-    width: 125px;
-    height: 35px;
+    right: 10px;
+    width: 120px;
+    height: 38px;
     position: fixed;
   }
   .home-container13 {
-    top: 65px;
     right: 10px;
-    width: 60px;
+    width: 65px;
     height: 35px;
     position: fixed;
     padding-top: 0px;
