@@ -997,14 +997,25 @@
             </div>
           </div>
         </section>
-        <section
-          id="cases"
-          data-nav-endata-nav-en="Use Cases"
-          data-nav-es="Casos de Uso"
-          class="home-cases"
-        >
-          <div class="home-container27">
+        <section class="home-cases">
+          <div>
             <div class="home-container28">
+              <script>
+                (function(){
+                  // Cambia estos textos por los de esa sección
+                  var en='Use Cases', es='Casos de Uso';
+                  var host = document.currentScript.parentElement;
+                  if(host){
+                    host.setAttribute('data-nav-en', en);
+                    host.setAttribute('data-nav-es', es);
+                    host.classList.add('nav-section'); // opcional, útil para depurar
+                  }
+                })();
+              </script>
+            </div>
+          </div>
+          <div class="home-container29">
+            <div class="home-container30">
               <section
                 id="usecases"
                 style="
@@ -1443,7 +1454,7 @@
           class="home-faq"
         >
           <div>
-            <div class="home-container30">
+            <div class="home-container32">
               <script>
                 (function(){
                   // Cambia estos textos por los de esa sección
@@ -1458,8 +1469,8 @@
               </script>
             </div>
           </div>
-          <div class="home-container31">
-            <div class="home-container32">
+          <div class="home-container33">
+            <div class="home-container34">
               <section
                 id="faq"
                 style="
@@ -1652,8 +1663,8 @@
           data-nav-es="Contacto"
           class="home-comtact"
         >
-          <div class="home-container33">
-            <div class="home-container34">
+          <div class="home-container35">
+            <div class="home-container36">
               <script>
                 (function(){
                   // Cambia estos textos por los de esa sección
@@ -1668,8 +1679,8 @@
               </script>
             </div>
           </div>
-          <div class="home-container35">
-            <div class="home-container36">
+          <div class="home-container37">
+            <div class="home-container38">
               <section
                 id="contact-card"
                 style="width:100%;max-width:560px;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif"
@@ -1902,7 +1913,7 @@
           </div>
         </section>
         <section class="home-social-media">
-          <div class="home-container37">
+          <div class="home-container39">
             <img
               alt="Engineering Solutions Logo"
               src="public/lbb_logo_hw.svg"
