@@ -168,14 +168,13 @@
  
 .home-comtact {
   flex: 0 0 auto;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
  
 .home-container25 {
-  width: 100%;
+  width: auto;
   display: flex;
   align-self: flex-start;
   align-items: center;
@@ -254,7 +253,7 @@
     width: 100vh;
   }
   .home-container25 {
-    width: 100vh;
+    width: auto;
   }
   .home-container27 {
     width: 60%;
@@ -302,7 +301,7 @@
     width: 681px;
   }
   .home-container25 {
-    width: 681px;
+    width: auto;
   }
 }
  
@@ -342,7 +341,7 @@
     padding-bottom: 0px;
   }
   .home-container25 {
-    width: 478px;
+    width: auto;
     padding-bottom: 0px;
   }
   .home-image1 {
