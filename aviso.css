@@ -1,0 +1,17 @@
+.aviso-container1 {
+  width: 100%;
+  display: flex;
+  min-height: 100vh;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+}
+ 
+.aviso-container2 {
+  width: 100%;
+  z-index: 100%;
+}
+ 
+.aviso-container3 {
+  display: contents;
+}
