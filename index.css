@@ -255,6 +255,14 @@
   flex-direction: column;
 }
  
+.home-container30 {
+  width: 100%;
+}
+ 
+.home-container31 {
+  display: contents;
+}
+ 
 .home-image1 {
   height: 4rem;
 }
